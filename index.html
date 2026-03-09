@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>시엘 협업 수면·행동 기록 앱</title>
+  <title>시엘 행동 분석 앱 6.0</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -18,6 +18,7 @@
       --blue-soft: #eff6ff;
       --amber-soft: #fffbeb;
       --green-soft: #ecfdf5;
+      --rose-soft: #fff1f2;
     }
     * { box-sizing: border-box; }
     body {
@@ -26,16 +27,12 @@
       background: var(--bg);
       color: var(--text);
     }
-    .wrap {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 { margin: 0 0 8px; font-size: 28px; }
+    .wrap { max-width: 1320px; margin: 0 auto; padding: 20px; }
+    h1 { margin: 0 0 8px; font-size: 30px; }
     .sub { color: var(--muted); margin-bottom: 18px; }
     .grid { display: grid; gap: 16px; }
     .top { grid-template-columns: repeat(6, 1fr); }
-    .main { grid-template-columns: 420px 1fr; align-items: start; }
+    .main { grid-template-columns: 430px 1fr; align-items: start; }
     .two { grid-template-columns: repeat(2, 1fr); }
     .three { grid-template-columns: repeat(3, 1fr); }
     .card {
@@ -49,11 +46,7 @@
     .stat-value { font-size: 28px; font-weight: 700; }
     .section-title { margin: 0 0 10px; font-size: 18px; }
     label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-    input, select, textarea, button {
-      width: 100%;
-      font: inherit;
-      border-radius: 12px;
-    }
+    input, select, textarea, button { width: 100%; font: inherit; border-radius: 12px; }
     input, select, textarea {
       padding: 10px 12px;
       border: 1px solid var(--border);
@@ -72,6 +65,7 @@
       background: white;
       color: var(--text);
       border: 1px solid var(--border);
+      width: auto;
     }
     .danger-btn {
       background: #fff1f2;
@@ -86,29 +80,16 @@
     .row4 { grid-template-columns: repeat(4, 1fr); }
     .row5 { grid-template-columns: repeat(5, 1fr); }
     .events, .role-grid, .segment-grid {
-      display: grid;
-      gap: 8px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
-      background: #fafafa;
+      display: grid; gap: 8px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: #fafafa;
     }
     .events { grid-template-columns: repeat(2, 1fr); }
     .role-grid { grid-template-columns: repeat(2, 1fr); }
     .segment-grid { grid-template-columns: repeat(3, 1fr); }
-    .event-item, .radio-item {
-      display: flex; align-items: center; gap: 8px; font-size: 14px;
-    }
+    .event-item, .radio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
     .event-item input, .radio-item input { width: auto; }
     .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-right: 6px;
-      margin-bottom: 6px;
-      background: #e2e8f0;
+      display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      margin-right: 6px; margin-bottom: 6px; background: #e2e8f0;
     }
     .risk-high { background: #fee2e2; color: #b91c1c; }
     .risk-mid { background: #fef3c7; color: #b45309; }
@@ -127,6 +108,7 @@
     .soft-blue { background: var(--blue-soft); }
     .soft-amber { background: var(--amber-soft); }
     .soft-green { background: var(--green-soft); }
+    .soft-rose { background: var(--rose-soft); }
     canvas { width: 100% !important; height: 300px !important; }
     .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
     @media (max-width: 980px) {
@@ -149,8 +131,8 @@
     <div class="toolbar no-print">
       <button id="printBtn" class="outline-btn">A4 출력 / PDF 저장</button>
       <button id="downloadReportBtn" class="outline-btn">요약 파일 다운로드</button>
-    </div><h1>시엘 협업 수면·행동 패턴 분석 앱</h1>
-<div class="sub">엄마가 중심 입력하고, 전체 컨디션을 한눈에 보고 A4 출력으로 공유할 수 있는 기록 앱</div>
+    </div><h1>시엘 행동 분석 앱 6.0</h1>
+<div class="sub">수면, 약, 차 이동, 불안, 턱 행동, 신체 자극 행동, 위험 예측, 자동 패턴 발견을 한 번에 보는 장기 기록용 버전</div>
 
 <div class="grid top">
   <div class="card"><div class="stat-title">최근 수면</div><div class="stat-value" id="statLatestSleep">-</div></div>
@@ -161,7 +143,7 @@
   <div class="card"><div class="stat-title">평균 행동점수</div><div class="stat-value" id="statAvgBehavior">-</div></div>
 </div>
 
-<div class="card" style="margin-top:16px; border-width:2px;">
+<div class="card soft-rose" style="margin-top:16px; border-width:2px;">
   <h3 class="section-title">오늘 고위험일 예측</h3>
   <div id="predictionBadge"></div>
   <div class="note" id="predictionSummary">입력값을 바꾸면 오늘 위험도가 계산됩니다.</div>
@@ -184,7 +166,7 @@
     <div class="field">
       <label>입력자 선택</label>
       <div class="role-grid" id="roleBox"></div>
-      <div class="mini" id="roleHelp" style="margin-top:8px;">학교와 늘봄은 관람 중심, 피드백은 메모로 보고 엄마가 입력하는 구조에 맞춰 조정했습니다.</div>
+      <div class="mini" id="roleHelp" style="margin-top:8px;">엄마·아빠는 입력/수정, 학교·늘봄은 관람용으로 가정한 구조입니다.</div>
     </div>
 
     <div class="field">
@@ -197,10 +179,21 @@
       <div class="field"><label>기록자 이름</label><input id="editorName" placeholder="예: 엄마"></div>
     </div>
 
-    <div class="row2">
+    <div class="row3">
       <div class="field"><label>슬립나이토 mg</label><input id="sleepNaitoMg" type="number" step="0.1"></div>
       <div class="field"><label>리스페리돈 mg</label><input id="risperidoneMg" type="number" step="0.1"></div>
+      <div class="field"><label>약 변경 상태</label>
+        <select id="medChangeType">
+          <option value="">변경 없음</option>
+          <option>증량</option>
+          <option>감량</option>
+          <option>새 약 시작</option>
+          <option>중단</option>
+        </select>
+      </div>
     </div>
+
+    <div class="field"><label>약 변경 메모</label><input id="medChangeNote" placeholder="예: 리스페리돈 1mg→1.5mg, 불안 증가로 증량"></div>
 
     <div class="row2">
       <div class="field"><label>잠든 시간</label><input id="sleepTime" type="time" value="21:00"></div>
@@ -221,12 +214,27 @@
       </div>
     </div>
 
+    <div class="row3">
+      <div class="field"><label>차 이동 고위험 반응 0~5</label><input id="carStress" type="number" min="0" max="5" value="0"></div>
+      <div class="field"><label>회복까지 걸린 시간</label>
+        <select id="recoveryTime">
+          <option value="">선택 안함</option>
+          <option>5분 이내</option>
+          <option>10분</option>
+          <option>30분</option>
+          <option>1시간 이상</option>
+          <option>도착 후에도 지속</option>
+        </select>
+      </div>
+      <div class="field"><label>참여도 0~5</label><input id="participation" type="number" min="0" max="5" value="0"></div>
+    </div>
+
     <div class="row5">
       <div class="field"><label>팬트럼</label><input id="tantrumCount" type="number" min="0" value="0"></div>
       <div class="field"><label>턱 행동</label><input id="chinCount" type="number" min="0" value="0"></div>
       <div class="field"><label>공격성</label><input id="aggressionCount" type="number" min="0" value="0"></div>
       <div class="field"><label>불안</label><input id="anxietyCount" type="number" min="0" value="0"></div>
-      <div class="field"><label>참여도 0~5</label><input id="participation" type="number" min="0" max="5" value="0"></div>
+      <div class="field"><label>신체 자극 행동</label><input id="bodyStimCount" type="number" min="0" value="0"></div>
     </div>
 
     <div class="field">
@@ -243,18 +251,25 @@
     <div class="grid two">
       <div class="card soft-blue">
         <h3 class="section-title">공유 방식</h3>
-        <div class="tip">엄마가 중심으로 입력하고, 학교·늘봄 선생님은 인쇄물이나 PDF로 흐름을 공유받는 방식에 맞춰 두었습니다.</div>
-        <div class="tip">아빠는 같은 항목을 보고 수정 방향을 함께 상의할 수 있습니다.</div>
+        <div class="tip">엄마가 중심으로 입력하고, 아빠와 함께 흐름을 확인하는 구조</div>
+        <div class="tip">학교·늘봄은 A4 출력 또는 PDF로 공유</div>
       </div>
       <div class="card soft-amber">
-        <h3 class="section-title">A4 공유 안내</h3>
-        <div class="tip">상단의 <strong>A4 출력 / PDF 저장</strong> 버튼으로 인쇄하거나 PDF로 저장해 선생님께 공유할 수 있습니다.</div>
-        <div class="tip"><strong>요약 파일 다운로드</strong> 버튼은 텍스트 보고서를 저장합니다.</div>
+        <h3 class="section-title">현재 버전 안내</h3>
+        <div class="tip">이 버전은 완전히 수정된 단일 HTML 코드입니다.</div>
+        <div class="tip">GitHub의 <strong>index.html</strong> 전체를 이 코드로 교체하면 됩니다.</div>
       </div>
     </div>
 
-    <div class="card"><h3 class="section-title">수면 · 약 변화</h3><canvas id="sleepChart"></canvas></div>
-    <div class="card"><h3 class="section-title">행동 그래프</h3><canvas id="behaviorChart"></canvas></div>
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">수면 · 약 변화</h3><canvas id="sleepChart"></canvas></div>
+      <div class="card"><h3 class="section-title">행동 그래프</h3><canvas id="behaviorChart"></canvas></div>
+    </div>
+
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">자동 패턴 발견</h3><div id="patternDiscovery" class="list-box"></div></div>
+      <div class="card"><h3 class="section-title">차 이동 전용 분석</h3><div id="carPatternSummary" class="list-box"></div></div>
+    </div>
 
     <div class="grid two">
       <div class="card"><h3 class="section-title">큰 영향 이벤트</h3><div id="triggerSummary" class="list-box"></div></div>
@@ -266,10 +281,7 @@
       <div class="card"><h3 class="section-title">미리 줄이는 구조 제안</h3><div id="preventionGuide" class="list-box"></div></div>
     </div>
 
-    <div class="card">
-      <h3 class="section-title">하루 통합 타임라인</h3>
-      <div id="dailyTimeline" class="grid three"></div>
-    </div>
+    <div class="card"><h3 class="section-title">하루 통합 타임라인</h3><div id="dailyTimeline" class="grid three"></div></div>
   </div>
 </div>
 
@@ -279,7 +291,7 @@
 </div>
 
   </div>  <script>
-    const STORAGE_KEY = 'siel-collab-app-v3';
+    const STORAGE_KEY = 'siel-app-v6';
     const EVENT_OPTIONS = [
       { id: 'hospital', label: '병원/검사' },
       { id: 'school', label: '학교/치료' },
@@ -293,17 +305,15 @@
     ];
     const ROLE_OPTIONS = [
       { id: 'mother', label: '엄마', bucket: 'parent' },
-      { id: 'father', label: '아빠', bucket: 'parent' },
-      { id: 'schoolTeacher', label: '학교 선생님(관람)', bucket: 'school' },
-      { id: 'afterTeacher', label: '늘봄 선생님(관람)', bucket: 'after' }
+      { id: 'father', label: '아빠', bucket: 'parent' }
     ];
     const SEGMENT_OPTIONS = [
       { id: 'home', label: '가정' },
       { id: 'school', label: '학교' },
       { id: 'after', label: '늘봄' }
     ];
-
-    const ids = ['date','editorName','sleepNaitoMg','risperidoneMg','sleepTime','wakeUps','finalWakeTime','napMinutes','sleepyTime','carAnxiety','tantrumCount','chinCount','aggressionCount','anxietyCount','participation','mealAmount','notes'];
+    const ids = ['date','editorName','sleepNaitoMg','risperidoneMg','medChangeType','medChangeNote','sleepTime','wakeUps','finalWakeTime','napMinutes','sleepyTime','carAnxiety','carStress','recoveryTime','tantrumCount','chinCount','aggressionCount','anxietyCount','bodyStimCount','participation','mealAmount','notes'];
+    let editingKey = null;
     const $ = (id) => document.getElementById(id);
     $('date').value = new Date().toISOString().slice(0, 10);
 
@@ -327,31 +337,32 @@
     }
     function mealScore(value) { return value === '적음' ? 1 : value === '보통' ? 2 : value === '많음' ? 3 : 0; }
     function behaviorScore(entry) {
-      return Number(entry.tantrumCount || 0) + Number(entry.chinCount || 0) + Number(entry.aggressionCount || 0) + Number(entry.anxietyCount || 0);
+      return Number(entry.tantrumCount || 0) + Number(entry.chinCount || 0) + Number(entry.aggressionCount || 0) + Number(entry.anxietyCount || 0) + Number(entry.bodyStimCount || 0);
     }
-    function eventLabel(id) {
-      return EVENT_OPTIONS.find(e => e.id === id)?.label || id;
-    }
-    function roleInfo(roleId) {
-      return ROLE_OPTIONS.find(r => r.id === roleId) || ROLE_OPTIONS[0];
-    }
-    function segmentLabel(id) {
-      return SEGMENT_OPTIONS.find(s => s.id === id)?.label || id;
-    }
+    function eventLabel(id) { return EVENT_OPTIONS.find(e => e.id === id)?.label || id; }
+    function roleInfo(roleId) { return ROLE_OPTIONS.find(r => r.id === roleId) || ROLE_OPTIONS[0]; }
+    function segmentLabel(id) { return SEGMENT_OPTIONS.find(s => s.id === id)?.label || id; }
     function roleBadgeClass(roleId) {
       const bucket = roleInfo(roleId).bucket;
       return bucket === 'parent' ? 'role-parent' : bucket === 'school' ? 'role-school' : 'role-after';
     }
+    function riskLevelFromBehavior(score) { return score >= 10 ? '높음' : score >= 6 ? '주의' : '안정'; }
+    function riskClass(level) { return level === '높음' ? 'risk-high' : level === '주의' ? 'risk-mid' : 'risk-low'; }
+
     function getRiskFlags(entry) {
       const flags = [];
       const sleep = durationAcrossMidnight(entry.sleepTime, entry.finalWakeTime);
       const wakeCount = parseWakeUps(entry.wakeUps).length;
       const car = Number(entry.carAnxiety || 0);
       const anxiety = Number(entry.anxietyCount || 0);
+      const stim = Number(entry.bodyStimCount || 0);
+      const carStress = Number(entry.carStress || 0);
       if (sleep != null && sleep < 8) flags.push('수면 부족');
       if (wakeCount >= 2) flags.push('야간 각성 많음');
       if (car >= 3) flags.push('차 불안 높음');
       if (anxiety >= 3) flags.push('불안 높음');
+      if (stim >= 3) flags.push('신체 자극 행동 높음');
+      if (carStress >= 3) flags.push('차 이동 고위험 반응');
       if (mealScore(entry.mealAmount) === 1) flags.push('식사량 적음');
       (entry.events || []).forEach(ev => {
         if (ev === 'poorSleep') flags.push('전날 수면 불안정');
@@ -361,14 +372,14 @@
       });
       return [...new Set(flags)];
     }
-    function riskLevelFromBehavior(score) {
-      return score >= 9 ? '높음' : score >= 5 ? '주의' : '안정';
-    }
+
     function prediction(entry) {
       const sleep = durationAcrossMidnight(entry.sleepTime, entry.finalWakeTime);
       const wakeCount = parseWakeUps(entry.wakeUps).length;
       const car = Number(entry.carAnxiety || 0);
       const anxiety = Number(entry.anxietyCount || 0);
+      const stim = Number(entry.bodyStimCount || 0);
+      const carStress = Number(entry.carStress || 0);
       const events = entry.events || [];
       let score = 0;
       const reasons = [];
@@ -377,24 +388,23 @@
       if (wakeCount >= 2) { score += 2; reasons.push('야간 각성 2회 이상'); actions.push('오전 일정을 단순하게 두고 회복 시간을 먼저 확보하기'); }
       if (car >= 3) { score += 2; reasons.push('차 불안 높음'); actions.push('차 타기 전 예고 5분과 손 대체물 준비하기'); }
       if (anxiety >= 3) { score += 2; reasons.push('불안 높음'); actions.push('새로운 요구보다 안정 루틴과 예고를 먼저 제공하기'); }
+      if (stim >= 3) { score += 2; reasons.push('신체 자극 행동 높음'); actions.push('감각 대체 활동과 회복 공간을 먼저 제공하기'); }
+      if (carStress >= 3) { score += 3; reasons.push('차 이동 고위험 반응'); actions.push('차 이동 전용 안정 루틴과 도착 후 회복 시간을 확보하기'); }
       if (mealScore(entry.mealAmount) === 1) { score += 1; reasons.push('식사량 적음'); actions.push('익숙한 음식과 간단한 보충 간식 준비하기'); }
       if (events.includes('hospital')) { score += 2; reasons.push('병원/검사 일정'); actions.push('병원 전후 일정 강도를 낮추고 회복 루틴 넣기'); }
       if (events.includes('car')) { score += 1; reasons.push('차 이동 많음'); actions.push('이동 후 바로 안정 활동으로 연결하기'); }
       if (events.includes('poorSleep')) { score += 2; reasons.push('전날 수면 불안정'); actions.push('자극 많은 외출이나 긴 대기 상황 피하기'); }
       if (events.includes('outing')) { score += 1; reasons.push('사람 많은 외출'); actions.push('짧게 다녀오고 중간 회복 지점 미리 정하기'); }
-      const level = score >= 7 ? '높음' : score >= 4 ? '주의' : '안정';
+      const level = score >= 8 ? '높음' : score >= 4 ? '주의' : '안정';
       return {
         score, level, reasons,
-        actions: [...new Set(actions)].slice(0, 4),
+        actions: [...new Set(actions)].slice(0, 5),
         summary: level === '높음'
           ? '오늘은 힘든 행동이 올라올 가능성이 높아 보여요. 요구량을 줄이고 안정 구조를 먼저 깔아주는 날입니다.'
           : level === '주의'
             ? '오늘은 주의가 필요한 날이에요. 전조 신호를 빨리 읽고 전환을 부드럽게 해 주세요.'
             : '현재 기록상 비교적 안정 가능성이 높아요. 평소 루틴을 유지해 주세요.'
       };
-    }
-    function riskClass(level) {
-      return level === '높음' ? 'risk-high' : level === '주의' ? 'risk-mid' : 'risk-low';
     }
 
     function renderChoiceBoxes() {
@@ -405,24 +415,14 @@
         <label class="radio-item"><input type="radio" name="segment" value="${s.id}" ${i === 0 ? 'checked' : ''}> ${s.label}</label>
       `).join('');
     }
-    function currentRole() {
-      return document.querySelector('input[name="role"]:checked')?.value || 'mother';
-    }
-    function currentSegment() {
-      return document.querySelector('input[name="segment"]:checked')?.value || 'home';
-    }
+    function currentRole() { return document.querySelector('input[name="role"]:checked')?.value || 'mother'; }
+    function currentSegment() { return document.querySelector('input[name="segment"]:checked')?.value || 'home'; }
     function syncSegmentByRole() {
       const role = currentRole();
-      const bucket = roleInfo(role).bucket;
-      let segment = 'home';
-      if (bucket === 'school') segment = 'school';
-      if (bucket === 'after') segment = 'after';
-      const segmentInput = document.querySelector(`input[name="segment"][value="${segment}"]`);
+      const segmentInput = document.querySelector('input[name="segment"][value="home"]');
       if (segmentInput) segmentInput.checked = true;
       $('editorName').value = roleInfo(role).label;
-      $('roleHelp').textContent = bucket === 'parent'
-        ? '엄마·아빠는 같은 가정 기록을 함께 보며 수정 방향을 맞출 수 있습니다.'
-        : '학교와 늘봄은 관람 중심으로 보고, 이슈는 메모를 통해 엄마가 입력하는 방식에 맞춰 두었습니다.';
+      $('roleHelp').textContent = '입력자는 엄마·아빠만 두고, 학교·늘봄에는 PDF 출력물로 공유하는 구조에 맞춰 두었습니다.';
     }
 
     EVENT_OPTIONS.forEach(ev => {
@@ -440,16 +440,21 @@
         editorName: $('editorName').value || roleInfo(currentRole()).label,
         sleepNaitoMg: $('sleepNaitoMg').value,
         risperidoneMg: $('risperidoneMg').value,
+        medChangeType: $('medChangeType').value,
+        medChangeNote: $('medChangeNote').value,
         sleepTime: $('sleepTime').value,
         wakeUps: $('wakeUps').value,
         finalWakeTime: $('finalWakeTime').value,
         napMinutes: $('napMinutes').value,
         sleepyTime: $('sleepyTime').value,
         carAnxiety: $('carAnxiety').value,
+        carStress: $('carStress').value,
+        recoveryTime: $('recoveryTime').value,
         tantrumCount: $('tantrumCount').value,
         chinCount: $('chinCount').value,
         aggressionCount: $('aggressionCount').value,
         anxietyCount: $('anxietyCount').value,
+        bodyStimCount: $('bodyStimCount').value,
         participation: $('participation').value,
         mealAmount: $('mealAmount').value,
         notes: $('notes').value,
@@ -461,9 +466,13 @@
     function resetForm() {
       ids.forEach(id => {
         if ($(id).type === 'number') {
-          $(id).value = ['napMinutes','carAnxiety','tantrumCount','chinCount','aggressionCount','anxietyCount','participation'].includes(id) ? '0' : '';
+          $(id).value = ['napMinutes','carAnxiety','carStress','tantrumCount','chinCount','aggressionCount','anxietyCount','bodyStimCount','participation'].includes(id) ? '0' : '';
+        } else if (id !== 'date') {
+          $(id).value = '';
         }
       });
+      editingKey = null;
+      $('saveBtn').textContent = '저장';
       $('date').value = new Date().toISOString().slice(0, 10);
       $('sleepTime').value = '21:00';
       $('finalWakeTime').value = '06:30';
@@ -481,9 +490,7 @@
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
       catch { return []; }
     }
-    function saveEntries(entries) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
+    function saveEntries(entries) { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
 
     let sleepChart, behaviorChart;
 
@@ -513,7 +520,8 @@
             <span class="badge ${roleBadgeClass(entry.role)}">${roleInfo(entry.role).label}</span>
           </div>
           <div class="mini" style="margin-top:6px;">행동점수 ${behaviorScore(entry)} · 참여도 ${entry.participation || 0}/5</div>
-          <div class="mini">팬트럼 ${entry.tantrumCount || 0} · 턱 ${entry.chinCount || 0} · 공격성 ${entry.aggressionCount || 0} · 불안 ${entry.anxietyCount || 0}</div>
+          <div class="mini">팬트럼 ${entry.tantrumCount || 0} · 턱 ${entry.chinCount || 0} · 공격성 ${entry.aggressionCount || 0}</div>
+          <div class="mini">불안 ${entry.anxietyCount || 0} · 신체 자극 ${entry.bodyStimCount || 0} · 차 고위험 ${entry.carStress || 0}</div>
           ${entry.notes ? `<div class="note">${entry.notes}</div>` : ''}
         </div>
       `;
@@ -536,14 +544,54 @@
       enriched.slice().reverse().forEach(e => {
         lines.push(`[${e.date} / ${segmentLabel(e.segment)} / ${roleInfo(e.role).label}]`);
         lines.push(`수면 ${formatHours(e.sleep)} / 깸 ${e.wakeCount}회 / 슬립나이토 ${e.sleepNaitoMg || '-'} / 리스페리돈 ${e.risperidoneMg || '-'}`);
-        lines.push(`팬트럼 ${e.tantrumCount || 0} / 턱 ${e.chinCount || 0} / 공격성 ${e.aggressionCount || 0} / 불안 ${e.anxietyCount || 0} / 참여도 ${e.participation || 0}`);
-        lines.push(`식사량 ${e.mealAmount || '-'} / 차 불안 ${e.carAnxiety || 0}/5 / 낮잠 ${e.napMinutes || 0}분`);
+        if (e.medChangeType) lines.push(`약 변경: ${e.medChangeType} / ${e.medChangeNote || ''}`);
+        lines.push(`팬트럼 ${e.tantrumCount || 0} / 턱 ${e.chinCount || 0} / 공격성 ${e.aggressionCount || 0} / 불안 ${e.anxietyCount || 0} / 신체 자극 ${e.bodyStimCount || 0}`);
+        lines.push(`차 불안 ${e.carAnxiety || 0}/5 / 차 고위험 ${e.carStress || 0}/5 / 회복 ${e.recoveryTime || '-'} / 참여도 ${e.participation || 0}`);
         if ((e.events || []).length) lines.push(`이벤트: ${(e.events || []).map(eventLabel).join(', ')}`);
         if ((e.riskFlags || []).length) lines.push(`위험 신호: ${(e.riskFlags || []).join(', ')}`);
         if (e.notes) lines.push(`메모: ${e.notes}`);
         lines.push('');
       });
-      return lines.join('\n');
+      return lines.join('
+');
+    }
+
+    function loadEntryToForm(date, segment) {
+      const entry = loadEntries().find(e => e.date === date && e.segment === segment);
+      if (!entry) return;
+      editingKey = `${date}__${segment}`;
+      $('saveBtn').textContent = '수정 저장';
+      document.querySelector(`input[name="role"][value="${entry.role || 'mother'}"]`).checked = true;
+      syncSegmentByRole();
+      const segmentInput = document.querySelector(`input[name="segment"][value="${entry.segment || 'home'}"]`);
+      if (segmentInput) segmentInput.checked = true;
+      $('date').value = entry.date || '';
+      $('editorName').value = entry.editorName || '';
+      $('sleepNaitoMg').value = entry.sleepNaitoMg || '';
+      $('risperidoneMg').value = entry.risperidoneMg || '';
+      $('medChangeType').value = entry.medChangeType || '';
+      $('medChangeNote').value = entry.medChangeNote || '';
+      $('sleepTime').value = entry.sleepTime || '21:00';
+      $('wakeUps').value = entry.wakeUps || '';
+      $('finalWakeTime').value = entry.finalWakeTime || '06:30';
+      $('napMinutes').value = entry.napMinutes || '0';
+      $('sleepyTime').value = entry.sleepyTime || '15:00';
+      $('carAnxiety').value = entry.carAnxiety || '0';
+      $('carStress').value = entry.carStress || '0';
+      $('recoveryTime').value = entry.recoveryTime || '';
+      $('tantrumCount').value = entry.tantrumCount || '0';
+      $('chinCount').value = entry.chinCount || '0';
+      $('aggressionCount').value = entry.aggressionCount || '0';
+      $('anxietyCount').value = entry.anxietyCount || '0';
+      $('bodyStimCount').value = entry.bodyStimCount || '0';
+      $('participation').value = entry.participation || '0';
+      $('mealAmount').value = entry.mealAmount || '보통';
+      $('notes').value = entry.notes || '';
+      $('eventsBox').querySelectorAll('input').forEach(i => {
+        i.checked = (entry.events || []).includes(i.value);
+      });
+      renderPrediction();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function downloadTextReport() {
@@ -556,6 +604,50 @@
       a.download = `시엘_요약보고서_${new Date().toISOString().slice(0,10)}.txt`;
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function analyzePatterns(entries) {
+      const patterns = [];
+      const groupCompare = (label, matchFn, metricFn, compareLabel) => {
+        const yes = entries.filter(matchFn);
+        const no = entries.filter(e => !matchFn(e));
+        if (yes.length < 3 || no.length < 3) return;
+        const yesAvg = yes.reduce((s, e) => s + metricFn(e), 0) / yes.length;
+        const noAvg = no.reduce((s, e) => s + metricFn(e), 0) / no.length;
+        if (yesAvg - noAvg >= 1) patterns.push(`${label}일 때 ${compareLabel} 증가 경향 (평균 ${yesAvg.toFixed(1)} vs ${noAvg.toFixed(1)})`);
+      };
+
+      groupCompare('수면 8시간 미만', e => (e.sleep || 0) < 8, e => Number(e.tantrumCount || 0), '팬트럼');
+      groupCompare('차 이동 기록이 있는 날', e => (e.events || []).includes('car'), e => Number(e.chinCount || 0), '턱 행동');
+      groupCompare('불안 3 이상', e => Number(e.anxietyCount || 0) >= 3, e => Number(e.aggressionCount || 0), '공격성');
+      groupCompare('신체 자극 행동 3 이상', e => Number(e.bodyStimCount || 0) >= 3, e => Number(e.anxietyCount || 0), '불안');
+      groupCompare('차 고위험 반응 3 이상', e => Number(e.carStress || 0) >= 3, e => behaviorScore(e), '행동점수');
+
+      const medChanged = entries.filter(e => e.medChangeType);
+      if (medChanged.length) {
+        patterns.push(`약 변경 기록 ${medChanged.length}회 있음. 약 변화 전후 3~14일 행동 변화를 함께 살펴보세요.`);
+      }
+      return patterns.slice(0, 6);
+    }
+
+    function analyzeCarPatterns(entries) {
+      const carDays = entries.filter(e => (e.events || []).includes('car') || Number(e.carStress || 0) > 0 || Number(e.carAnxiety || 0) > 0);
+      if (!carDays.length) return [];
+      const avg = (fn) => carDays.reduce((s, e) => s + fn(e), 0) / carDays.length;
+      const recoveryCount = {};
+      carDays.forEach(e => {
+        const key = e.recoveryTime || '기록 없음';
+        recoveryCount[key] = (recoveryCount[key] || 0) + 1;
+      });
+      const topRecovery = Object.entries(recoveryCount).sort((a,b) => b[1]-a[1])[0];
+      return [
+        `차 관련 기록 ${carDays.length}회`,
+        `차 불안 평균 ${avg(e => Number(e.carAnxiety || 0)).toFixed(1)} / 5`,
+        `차 고위험 반응 평균 ${avg(e => Number(e.carStress || 0)).toFixed(1)} / 5`,
+        `차 이동 날 턱 행동 평균 ${avg(e => Number(e.chinCount || 0)).toFixed(1)}`,
+        `차 이동 날 신체 자극 행동 평균 ${avg(e => Number(e.bodyStimCount || 0)).toFixed(1)}`,
+        topRecovery ? `가장 많은 회복 시간 기록: ${topRecovery[0]} (${topRecovery[1]}회)` : '회복 시간 데이터 부족'
+      ];
     }
 
     function render() {
@@ -584,6 +676,7 @@
       const chin = entries.map(e => Number(e.chinCount || 0));
       const aggression = entries.map(e => Number(e.aggressionCount || 0));
       const anxiety = entries.map(e => Number(e.anxietyCount || 0));
+      const bodyStim = entries.map(e => Number(e.bodyStimCount || 0));
       const bScore = entries.map(e => e.behaviorScore);
 
       if (sleepChart) sleepChart.destroy();
@@ -606,10 +699,21 @@
           { label: '턱', data: chin },
           { label: '공격성', data: aggression },
           { label: '불안', data: anxiety },
+          { label: '신체 자극', data: bodyStim },
           { label: '행동점수', data: bScore }
         ]},
         options: { responsive: true, maintainAspectRatio: false }
       });
+
+      const discovered = analyzePatterns(entries);
+      $('patternDiscovery').innerHTML = discovered.length
+        ? discovered.map(p => `<div class="tip">${p}</div>`).join('')
+        : '<div class="mini">기록이 더 쌓이면 자동 패턴이 나타납니다.</div>';
+
+      const carPatterns = analyzeCarPatterns(entries);
+      $('carPatternSummary').innerHTML = carPatterns.length
+        ? carPatterns.map(p => `<div class="tip">${p}</div>`).join('')
+        : '<div class="mini">차 이동 관련 기록이 쌓이면 전용 분석이 나타납니다.</div>';
 
       const triggerMap = {};
       entries.forEach(e => (e.events || []).forEach(ev => {
@@ -628,10 +732,10 @@
       const patternGroups = [
         { key: 'sleepLow', label: '수면 8시간 미만', match: e => e.sleep != null && e.sleep < 8 },
         { key: 'carHigh', label: '차 불안 3 이상', match: e => Number(e.carAnxiety || 0) >= 3 },
+        { key: 'carStressHigh', label: '차 고위험 반응 3 이상', match: e => Number(e.carStress || 0) >= 3 },
         { key: 'anxietyHigh', label: '불안 3 이상', match: e => Number(e.anxietyCount || 0) >= 3 },
-        { key: 'wakeHigh', label: '야간 각성 2회 이상', match: e => e.wakeCount >= 2 },
-        { key: 'hospital', label: '병원/검사 있는 기록', match: e => (e.events || []).includes('hospital') },
-        { key: 'car', label: '차 이동 많은 기록', match: e => (e.events || []).includes('car') }
+        { key: 'stimHigh', label: '신체 자극 행동 3 이상', match: e => Number(e.bodyStimCount || 0) >= 3 },
+        { key: 'wakeHigh', label: '야간 각성 2회 이상', match: e => e.wakeCount >= 2 }
       ];
       const patternSummary = patternGroups.map(g => {
         const m = entries.filter(g.match);
@@ -647,6 +751,7 @@
         <div class="tip">평균 행동점수: ${(last7.reduce((s, e) => s + e.behaviorScore, 0) / last7.length).toFixed(1)}</div>
         <div class="tip">평균 차 불안: ${(last7.reduce((s, e) => s + Number(e.carAnxiety || 0), 0) / last7.length).toFixed(1)} / 5</div>
         <div class="tip">평균 불안: ${(last7.reduce((s, e) => s + Number(e.anxietyCount || 0), 0) / last7.length).toFixed(1)}</div>
+        <div class="tip">평균 신체 자극: ${(last7.reduce((s, e) => s + Number(e.bodyStimCount || 0), 0) / last7.length).toFixed(1)}</div>
       ` : '<div class="mini">최근 기록이 아직 없습니다.</div>';
 
       let guide = [
@@ -656,10 +761,10 @@
       ];
       if (patternSummary[0]?.key === 'sleepLow') {
         guide = ['다음 날 요구량을 줄이고 이동 일정을 가볍게 잡기', '시각 예고를 더 촘촘히 넣고 전환 횟수 줄이기', '아침부터 요구 행동보다 안정 루틴 먼저 제공하기'];
-      } else if (patternSummary[0]?.key === 'carHigh' || patternSummary[0]?.key === 'car') {
-        guide = ['차 타기 전 5분 예고와 출발 루틴 고정하기', '차 안에서 잡을 물건과 손 대체물 미리 준비하기', '도착 직후 바로 안정 활동으로 연결하기'];
-      } else if (patternSummary[0]?.key === 'anxietyHigh') {
-        guide = ['새로운 과제보다 익숙한 루틴부터 시작하기', '시각 예고와 종료 예고를 더 분명하게 주기', '불안 신호가 올라오면 바로 회복 공간을 제공하기'];
+      } else if (patternSummary[0]?.key === 'carHigh' || patternSummary[0]?.key === 'carStressHigh') {
+        guide = ['차 타기 전 5분 예고와 출발 루틴 고정하기', '차 안에서 손 대체물과 감각 도구 미리 준비하기', '도착 직후 바로 안정 활동과 회복 시간을 확보하기'];
+      } else if (patternSummary[0]?.key === 'anxietyHigh' || patternSummary[0]?.key === 'stimHigh') {
+        guide = ['새로운 과제보다 익숙한 루틴부터 시작하기', '시각 예고와 종료 예고를 더 분명하게 주기', '불안 또는 신체 자극 신호가 올라오면 바로 회복 공간 제공하기'];
       }
       $('preventionGuide').innerHTML = guide.map(g => `<div class="tip">${g}</div>`).join('');
 
@@ -678,8 +783,12 @@
               <div style="font-size:18px; font-weight:700;">${e.date} · ${segmentLabel(e.segment)}</div>
               <span class="badge ${riskClass(e.riskLevel)}">${e.riskLevel}</span>
               <span class="badge ${roleBadgeClass(e.role)}">${roleInfo(e.role).label}</span>
+              ${e.medChangeType ? `<span class="badge">약 ${e.medChangeType}</span>` : ''}
             </div>
-            <button class="danger-btn no-print" onclick="deleteEntry('${e.date}','${e.segment}')">삭제</button>
+            <div style="display:flex; gap:8px;" class="no-print">
+            <button class="outline-btn" onclick="loadEntryToForm('${e.date}','${e.segment}')">수정</button>
+            <button class="danger-btn" onclick="deleteEntry('${e.date}','${e.segment}')">삭제</button>
+          </div>
           </div>
           <div class="mini">입력/수정: ${e.editorName || roleInfo(e.role).label} · ${e.updatedAt || '-'}</div>
           <div class="record-grid">
@@ -691,13 +800,15 @@
             <div>턱 ${e.chinCount}</div>
             <div>공격성 ${e.aggressionCount}</div>
             <div>불안 ${e.anxietyCount || 0}</div>
+            <div>신체 자극 ${e.bodyStimCount || 0}</div>
             <div>행동점수 ${e.behaviorScore}</div>
             <div>차 불안 ${e.carAnxiety || 0}/5</div>
-            <div>낮잠 ${e.napMinutes || 0}분</div>
+            <div>차 고위험 ${e.carStress || 0}/5</div>
+            <div>회복 ${e.recoveryTime || '-'}</div>
             <div>식사량 ${e.mealAmount || '-'}</div>
             <div>참여도 ${e.participation || 0}/5</div>
-            <div>졸림 ${e.sleepyTime || '-'}</div>
           </div>
+          ${e.medChangeNote ? `<div class="note">약 변경 메모: ${e.medChangeNote}</div>` : ''}
           <div style="margin-top:10px;">${e.riskFlags.map(f => `<span class="badge">${f}</span>`).join('')}</div>
           <div style="margin-top:4px;">${(e.events || []).map(ev => `<span class="badge">${eventLabel(ev)}</span>`).join('')}</div>
           <div class="note">${e.riskFlags.length ? e.riskFlags.join(' · ') + '이 겹친 기록입니다. 전환 강도를 낮추는 구조가 도움이 될 수 있습니다.' : '비교적 안정적인 기록으로 보입니다.'}</div>
@@ -712,15 +823,7 @@
       render();
     }
     window.deleteEntry = deleteEntry;
-
-    function buildDailyCombined(entries) {
-      const grouped = {};
-      entries.forEach(e => {
-        if (!grouped[e.date]) grouped[e.date] = { date: e.date, home: null, school: null, after: null };
-        grouped[e.date][e.segment] = e;
-      });
-      return Object.values(grouped).sort((a, b) => b.date.localeCompare(a.date));
-    }
+    window.loadEntryToForm = loadEntryToForm;
 
     ids.forEach(id => $(id).addEventListener('input', renderPrediction));
     $('eventsBox').addEventListener('change', renderPrediction);
@@ -735,14 +838,19 @@
     $('saveBtn').addEventListener('click', () => {
       const entry = formData();
       if (!entry.date) return;
-      const entries = loadEntries().filter(e => !(e.date === entry.date && e.segment === entry.segment));
-      entries.push(entry);
+      let entries = loadEntries();
+      const existingIndex = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
+      if (existingIndex >= 0) {
+        entries[existingIndex] = entry;
+      } else {
+        entries.push(entry);
+      }
       saveEntries(entries);
+      const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
       resetForm();
       render();
-      alert('저장되었습니다.');
+      alert(msg);
     });
-
     $('printBtn').addEventListener('click', () => window.print());
     $('downloadReportBtn').addEventListener('click', downloadTextReport);
 
