@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>시엘 행동 분석 앱 6.1</title>
+  <title>Dear Siel</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -170,151 +169,154 @@
     <div class="toolbar no-print">
       <button id="printBtn" class="outline-btn">A4 출력 / PDF 저장</button>
       <button id="downloadReportBtn" class="outline-btn">요약 파일 다운로드</button>
+    </div><h1>Dear Siel</h1>
+<div class="sub">Dear Siel — 시엘을 이해하기 위한 사랑의 기록입니다. 하루의 흐름을 가정, 학교, 늘봄, 센터, 이동·대기·외부 5개의 구간으로 기록하고, 행동 트리거 자동 발견과 패턴 분석 기능으로 시엘의 감정과 환경 변화를 더 빠르게 읽을 수 있도록 돕습니다.</div>
+
+<div class="grid top">
+  <div class="card"><div class="stat-title">최근 수면</div><div class="stat-value" id="statLatestSleep">-</div></div>
+  <div class="card"><div class="stat-title">평균 수면</div><div class="stat-value" id="statAvgSleep">-</div></div>
+  <div class="card"><div class="stat-title">평균 팬트럼</div><div class="stat-value" id="statAvgTantrum">-</div></div>
+  <div class="card"><div class="stat-title">평균 턱 행동</div><div class="stat-value" id="statAvgChin">-</div></div>
+  <div class="card"><div class="stat-title">평균 불안</div><div class="stat-value" id="statAvgAnxiety">-</div></div>
+  <div class="card"><div class="stat-title">평균 행동점수</div><div class="stat-value" id="statAvgBehavior">-</div></div>
+</div>
+
+<div class="card" style="margin-top:16px; border-width:2px;">
+  <h3 class="section-title">오늘 고위험일 예측</h3>
+  <div id="predictionBadge"></div>
+  <div class="note" id="predictionSummary">입력값을 바꾸면 오늘 위험도가 계산됩니다.</div>
+  <div class="grid two" style="margin-top:12px;">
+    <div>
+      <div style="font-weight:700; margin-bottom:8px;">위험 이유</div>
+      <div id="predictionReasons"></div>
     </div>
-
-    <h1>시엘 행동 분석 앱 6.1</h1>
-    <div class="sub">엄마·아빠 입력용 안정 버전입니다. 저장, 수정, 삭제가 정상 동작하도록 다시 정리했습니다.</div>
-
-    <div class="grid top">
-      <div class="card"><div class="stat-title">최근 수면</div><div class="stat-value" id="statLatestSleep">-</div></div>
-      <div class="card"><div class="stat-title">평균 수면</div><div class="stat-value" id="statAvgSleep">-</div></div>
-      <div class="card"><div class="stat-title">평균 팬트럼</div><div class="stat-value" id="statAvgTantrum">-</div></div>
-      <div class="card"><div class="stat-title">평균 턱 행동</div><div class="stat-value" id="statAvgChin">-</div></div>
-      <div class="card"><div class="stat-title">평균 불안</div><div class="stat-value" id="statAvgAnxiety">-</div></div>
-      <div class="card"><div class="stat-title">평균 행동점수</div><div class="stat-value" id="statAvgBehavior">-</div></div>
-    </div>
-
-    <div class="card" style="margin-top:16px; border-width:2px;">
-      <h3 class="section-title">오늘 고위험일 예측</h3>
-      <div id="predictionBadge"></div>
-      <div class="note" id="predictionSummary">입력값을 바꾸면 오늘 위험도가 계산됩니다.</div>
-      <div class="grid two" style="margin-top:12px;">
-        <div>
-          <div style="font-weight:700; margin-bottom:8px;">위험 이유</div>
-          <div id="predictionReasons"></div>
-        </div>
-        <div>
-          <div style="font-weight:700; margin-bottom:8px;">오늘 바로 할 수 있는 대응</div>
-          <div id="predictionActions" class="grid"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid main" style="margin-top:16px;">
-      <div class="card no-print">
-        <h3 class="section-title">기록 입력</h3>
-
-        <div class="field">
-          <label>입력자</label>
-          <div class="radio-grid" id="roleBox"></div>
-          <div class="mini" style="margin-top:8px;">학교/늘봄은 앱 입력 없이 PDF 공유용으로 가정했습니다.</div>
-        </div>
-
-        <div class="field">
-          <label>기록 구간</label>
-          <div class="radio-grid" id="segmentBox"></div>
-        </div>
-
-        <div class="row2">
-          <div class="field"><label>날짜</label><input id="date" type="date"></div>
-          <div class="field"><label>기록자 이름</label><input id="editorName"></div>
-        </div>
-
-        <div class="row3">
-          <div class="field"><label>슬립나이토 mg</label><input id="sleepNaitoMg" type="number" step="0.1"></div>
-          <div class="field"><label>리스페리돈 mg</label><input id="risperidoneMg" type="number" step="0.1"></div>
-          <div class="field"><label>약 변경 상태</label>
-            <select id="medChangeType">
-              <option value="">변경 없음</option>
-              <option>증량</option>
-              <option>감량</option>
-              <option>새 약 시작</option>
-              <option>중단</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field"><label>약 변경 메모</label><input id="medChangeNote" placeholder="예: 리스페리돈 1mg→1.5mg"></div>
-
-        <div class="row2">
-          <div class="field"><label>잠든 시간</label><input id="sleepTime" type="time" value="21:00"></div>
-          <div class="field"><label>기상 시간</label><input id="finalWakeTime" type="time" value="06:30"></div>
-        </div>
-
-        <div class="field"><label>깬 시간</label><input id="wakeUps" placeholder="01:20, 04:10"></div>
-
-        <div class="row2">
-          <div class="field"><label>낮잠(분)</label><input id="napMinutes" type="number" min="0" value="0"></div>
-          <div class="field"><label>졸려한 시간</label><input id="sleepyTime" type="time" value="15:00"></div>
-        </div>
-
-        <div class="row2">
-          <div class="field"><label>차 불안 0~5</label><input id="carAnxiety" type="number" min="0" max="5" value="0"></div>
-          <div class="field"><label>식사량</label>
-            <select id="mealAmount"><option>적음</option><option selected>보통</option><option>많음</option></select>
-          </div>
-        </div>
-
-        <div class="row3">
-          <div class="field"><label>차 이동 고위험 반응 0~5</label><input id="carStress" type="number" min="0" max="5" value="0"></div>
-          <div class="field"><label>회복까지 걸린 시간</label>
-            <select id="recoveryTime">
-              <option value="">선택 안함</option>
-              <option>5분 이내</option>
-              <option>10분</option>
-              <option>30분</option>
-              <option>1시간 이상</option>
-              <option>도착 후에도 지속</option>
-            </select>
-          </div>
-          <div class="field"><label>참여도 0~5</label><input id="participation" type="number" min="0" max="5" value="0"></div>
-        </div>
-
-        <div class="row5">
-          <div class="field"><label>팬트럼</label><input id="tantrumCount" type="number" min="0" value="0"></div>
-          <div class="field"><label>턱 행동</label><input id="chinCount" type="number" min="0" value="0"></div>
-          <div class="field"><label>공격성</label><input id="aggressionCount" type="number" min="0" value="0"></div>
-          <div class="field"><label>불안</label><input id="anxietyCount" type="number" min="0" value="0"></div>
-          <div class="field"><label>신체 자극 행동</label><input id="bodyStimCount" type="number" min="0" value="0"></div>
-        </div>
-
-        <div class="field">
-          <label>영향 이벤트</label>
-          <div class="events" id="eventsBox"></div>
-        </div>
-
-        <div class="field"><label>메모</label><textarea id="notes"></textarea></div>
-        <button id="saveBtn">저장</button>
-        <div class="mini" style="margin-top:8px;">같은 날짜 + 같은 구간으로 저장하면 수정됩니다.</div>
-      </div>
-
-      <div class="grid" style="gap:16px;">
-        <div class="grid two">
-          <div class="card"><h3 class="section-title">수면 · 약 변화</h3><canvas id="sleepChart"></canvas></div>
-          <div class="card"><h3 class="section-title">행동 그래프</h3><canvas id="behaviorChart"></canvas></div>
-        </div>
-
-        <div class="grid two">
-          <div class="card"><h3 class="section-title">자동 패턴 발견</h3><div id="patternDiscovery" class="grid"></div></div>
-          <div class="card"><h3 class="section-title">차 이동 전용 분석</h3><div id="carPatternSummary" class="grid"></div></div>
-        </div>
-
-        <div class="grid two">
-          <div class="card"><h3 class="section-title">반복 패턴 비교</h3><div id="patternSummary" class="grid"></div></div>
-          <div class="card"><h3 class="section-title">최근 7일 흐름</h3><div id="weeklyFlow" class="grid"></div></div>
-        </div>
-
-        <div class="card"><h3 class="section-title">하루 통합 타임라인</h3><div id="dailyTimeline" class="grid three"></div></div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:16px;">
-      <h3 class="section-title">기록</h3>
-      <div id="recordList"></div>
+    <div>
+      <div style="font-weight:700; margin-bottom:8px;">오늘 바로 할 수 있는 대응</div>
+      <div id="predictionActions" class="grid"></div>
     </div>
   </div>
+</div>
 
-  <script>
+<div class="grid main" style="margin-top:16px;">
+  <div class="card no-print">
+    <h3 class="section-title">기록 입력</h3>
+
+    <div class="field">
+      <label>입력자</label>
+      <div class="radio-grid" id="roleBox"></div>
+      <div class="mini" style="margin-top:8px;">학교/늘봄은 앱 입력 없이 PDF 공유용으로 가정했습니다.</div>
+    </div>
+
+    <div class="field">
+      <label>기록 구간</label>
+      <div class="radio-grid" id="segmentBox"></div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label>날짜</label><input id="date" type="date"></div>
+      <div class="field"><label>기록자 이름</label><input id="editorName"></div>
+    </div>
+
+    <div class="row3">
+      <div class="field"><label>슬립나이토 mg</label><input id="sleepNaitoMg" type="number" step="0.1"></div>
+      <div class="field"><label>리스페리돈 mg</label><input id="risperidoneMg" type="number" step="0.1"></div>
+      <div class="field"><label>약 변경 상태</label>
+        <select id="medChangeType">
+          <option value="">변경 없음</option>
+          <option>증량</option>
+          <option>감량</option>
+          <option>새 약 시작</option>
+          <option>중단</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field"><label>약 변경 메모</label><input id="medChangeNote" placeholder="예: 리스페리돈 1mg→1.5mg"></div>
+
+    <div class="row2">
+      <div class="field"><label>잠든 시간</label><input id="sleepTime" type="time" value="21:00"></div>
+      <div class="field"><label>기상 시간</label><input id="finalWakeTime" type="time" value="06:30"></div>
+    </div>
+
+    <div class="field"><label>깬 시간</label><input id="wakeUps" placeholder="01:20, 04:10"></div>
+
+    <div class="row2">
+      <div class="field"><label>낮잠(분)</label><input id="napMinutes" type="number" min="0" value="0"></div>
+      <div class="field"><label>졸려한 시간</label><input id="sleepyTime" type="time" value="15:00"></div>
+    </div>
+
+    <div class="row2">
+      <div class="field"><label>차 불안 0~5</label><input id="carAnxiety" type="number" min="0" max="5" value="0"></div>
+      <div class="field"><label>식사량</label>
+        <select id="mealAmount"><option>적음</option><option selected>보통</option><option>많음</option></select>
+      </div>
+    </div>
+
+    <div class="row3">
+      <div class="field"><label>차 이동 고위험 반응 0~5</label><input id="carStress" type="number" min="0" max="5" value="0"></div>
+      <div class="field"><label>회복까지 걸린 시간</label>
+        <select id="recoveryTime">
+          <option value="">선택 안함</option>
+          <option>5분 이내</option>
+          <option>10분</option>
+          <option>30분</option>
+          <option>1시간 이상</option>
+          <option>도착 후에도 지속</option>
+        </select>
+      </div>
+      <div class="field"><label>참여도 0~5</label><input id="participation" type="number" min="0" max="5" value="0"></div>
+    </div>
+
+    <div class="row5">
+      <div class="field"><label>팬트럼</label><input id="tantrumCount" type="number" min="0" value="0"></div>
+      <div class="field"><label>턱 행동</label><input id="chinCount" type="number" min="0" value="0"></div>
+      <div class="field"><label>공격성</label><input id="aggressionCount" type="number" min="0" value="0"></div>
+      <div class="field"><label>불안</label><input id="anxietyCount" type="number" min="0" value="0"></div>
+      <div class="field"><label>신체 자극 행동</label><input id="bodyStimCount" type="number" min="0" value="0"></div>
+    </div>
+
+    <div class="field">
+      <label>영향 이벤트</label>
+      <div class="events" id="eventsBox"></div>
+    </div>
+
+    <div class="field"><label>메모</label><textarea id="notes"></textarea></div>
+    <button id="saveBtn">저장</button>
+    <div id="saveStatus" class="note" style="display:none; margin-top:10px;"></div>
+    <div class="mini" style="margin-top:8px;">같은 날짜 + 같은 구간으로 저장하면 수정됩니다.</div>
+  </div>
+
+  <div class="grid" style="gap:16px;">
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">수면 · 약 변화</h3><canvas id="sleepChart"></canvas></div>
+      <div class="card"><h3 class="section-title">행동 그래프</h3><canvas id="behaviorChart"></canvas></div>
+    </div>
+
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">행동 트리거 자동 발견</h3><div id="triggerDiscovery" class="grid"></div></div>
+      <div class="card"><h3 class="section-title">자동 패턴 발견</h3><div id="patternDiscovery" class="grid"></div></div>
+    </div>
+
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">차 이동 전용 분석</h3><div id="carPatternSummary" class="grid"></div></div>
+      <div class="card"><h3 class="section-title">회복 시간 흐름</h3><div id="recoverySummary" class="grid"></div></div>
+    </div>
+
+    <div class="grid two">
+      <div class="card"><h3 class="section-title">반복 패턴 비교</h3><div id="patternSummary" class="grid"></div></div>
+      <div class="card"><h3 class="section-title">최근 7일 흐름</h3><div id="weeklyFlow" class="grid"></div></div>
+    </div>
+
+    <div class="card"><h3 class="section-title">하루 통합 타임라인</h3><div id="dailyTimeline" class="grid three"></div></div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3 class="section-title">기록</h3>
+  <div id="recordList"></div>
+</div>
+
+  </div>  <script>
     const STORAGE_KEY = 'siel-app-v61';
     const EVENT_OPTIONS = [
       { id: 'hospital', label: '병원/검사' },
@@ -334,7 +336,9 @@
     const SEGMENT_OPTIONS = [
       { id: 'home', label: '가정' },
       { id: 'school', label: '학교' },
-      { id: 'after', label: '늘봄' }
+      { id: 'after', label: '늘봄' },
+      { id: 'center', label: '센터' },
+      { id: 'transition', label: '이동·대기·외부' }
     ];
 
     let sleepChart = null;
@@ -522,6 +526,16 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
     }
 
+    function showStatus(message, isError = false) {
+      const box = $('saveStatus');
+      if (!box) return;
+      box.style.display = 'block';
+      box.textContent = message;
+      box.style.background = isError ? '#fff1f2' : '#f0fdf4';
+      box.style.color = isError ? '#b91c1c' : '#166534';
+      box.style.border = isError ? '1px solid #fecdd3' : '1px solid #bbf7d0';
+    }
+
     function loadEntryToForm(date, segment) {
       const entry = loadEntries().find(e => e.date === date && e.segment === segment);
       if (!entry) return;
@@ -599,6 +613,59 @@
         `차 이동 날 턱 행동 평균 ${avg(e => Number(e.chinCount || 0)).toFixed(1)}`,
         `차 이동 날 신체 자극 평균 ${avg(e => Number(e.bodyStimCount || 0)).toFixed(1)}`
       ];
+    }
+
+    function analyzeTriggers(entries) {
+      const combos = [];
+      const rules = [
+        { label: '수면 8시간 미만 + 차 이동', match: e => (e.sleep || 0) < 8 && ((e.events || []).includes('car') || Number(e.carAnxiety || 0) >= 1) },
+        { label: '차 불안 3 이상 + 이동·대기·외부', match: e => Number(e.carAnxiety || 0) >= 3 && e.segment === 'transition' },
+        { label: '불안 3 이상 + 신체 자극 3 이상', match: e => Number(e.anxietyCount || 0) >= 3 && Number(e.bodyStimCount || 0) >= 3 },
+        { label: '센터 + 차 이동', match: e => e.segment === 'center' && ((e.events || []).includes('car') || Number(e.carAnxiety || 0) >= 1) },
+        { label: '전날 수면 불안정 + 이동·대기·외부', match: e => (e.events || []).includes('poorSleep') && e.segment === 'transition' }
+      ];
+
+      rules.forEach(rule => {
+        const matched = entries.filter(rule.match);
+        if (matched.length < 2) return;
+        const avgBehavior = matched.reduce((s, e) => s + e.behaviorScore, 0) / matched.length;
+        combos.push(`${rule.label} → 평균 행동점수 ${avgBehavior.toFixed(1)}`);
+      });
+
+      const recent = entries
+        .filter(e => e.behaviorScore >= 6)
+        .map(e => ({
+          date: e.date,
+          segment: segmentLabel(e.segment),
+          summary: [
+            (e.sleep || 0) < 8 ? '수면 부족' : null,
+            Number(e.carAnxiety || 0) >= 3 ? '차 불안 높음' : null,
+            Number(e.carStress || 0) >= 3 ? '차 이동 고위험' : null,
+            Number(e.anxietyCount || 0) >= 3 ? '불안 높음' : null,
+            Number(e.bodyStimCount || 0) >= 3 ? '신체 자극 높음' : null,
+            (e.events || []).includes('poorSleep') ? '전날 수면 불안정' : null,
+            (e.events || []).includes('hospital') ? '병원/검사' : null,
+            (e.events || []).includes('car') ? '차 이동' : null
+          ].filter(Boolean)
+        }))
+        .filter(e => e.summary.length)
+        .slice(-3)
+        .reverse();
+
+      return { combos: combos.slice(0, 5), recent };
+    }
+
+    function analyzeRecovery(entries) {
+      const items = entries.filter(e => e.recoveryTime);
+      if (!items.length) return [];
+      const counts = {};
+      items.forEach(e => {
+        counts[e.recoveryTime] = (counts[e.recoveryTime] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([label, count]) => `${label}: ${count}회`)
+        .slice(0, 5);
     }
 
     function createReportText(entries) {
@@ -683,11 +750,20 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
+      const triggerInfo = analyzeTriggers(entries);
+      $('triggerDiscovery').innerHTML = [
+        ...(triggerInfo.combos || []).map(x => `<div class="tip">${x}</div>`),
+        ...((triggerInfo.recent || []).map(item => `<div class="tip"><strong>${item.date} · ${item.segment}</strong><div class="mini">${item.summary.join(' · ')}</div></div>`))
+      ].join('') || '<div class="mini">기록이 더 쌓이면 행동 트리거가 자동으로 보입니다.</div>';
+
       const discovered = analyzePatterns(entries);
       $('patternDiscovery').innerHTML = discovered.length ? discovered.map(x => `<div class="tip">${x}</div>`).join('') : '<div class="mini">기록이 더 쌓이면 자동 패턴이 나타납니다.</div>';
 
       const carInfo = analyzeCar(entries);
       $('carPatternSummary').innerHTML = carInfo.length ? carInfo.map(x => `<div class="tip">${x}</div>`).join('') : '<div class="mini">차 이동 관련 기록이 쌓이면 전용 분석이 나타납니다.</div>';
+
+      const recoveryInfo = analyzeRecovery(entries);
+      $('recoverySummary').innerHTML = recoveryInfo.length ? recoveryInfo.map(x => `<div class="tip">${x}</div>`).join('') : '<div class="mini">회복 시간 기록이 쌓이면 흐름이 나타납니다.</div>';
 
       const patternRows = [
         { label: '수면 8시간 미만', match: e => (e.sleep || 0) < 8 },
@@ -780,23 +856,37 @@
     $('eventsBox').addEventListener('change', renderPrediction);
 
     $('saveBtn').addEventListener('click', () => {
-      const entry = getFormData();
-      if (!entry.date) {
-        alert('날짜를 입력해 주세요.');
-        return;
+      try {
+        const entry = getFormData();
+        if (!entry.date) {
+          showStatus('날짜를 입력해 주세요.', true);
+          return;
+        }
+
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const entries = raw ? JSON.parse(raw) : [];
+        const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
+
+        if (idx >= 0) {
+          entries[idx] = entry;
+        } else {
+          entries.push(entry);
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        const check = localStorage.getItem(STORAGE_KEY);
+        if (!check) {
+          showStatus('저장이 완료되지 않았습니다. 브라우저 저장이 차단되었을 수 있어요.', true);
+          return;
+        }
+
+        const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
+        resetForm();
+        render();
+        showStatus(msg + ' 아래 기록 카드와 그래프를 확인해 주세요.');
+      } catch (error) {
+        showStatus('저장 중 오류가 생겼습니다: ' + error.message, true);
       }
-      const entries = loadEntries();
-      const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
-      if (idx >= 0) {
-        entries[idx] = entry;
-      } else {
-        entries.push(entry);
-      }
-      saveEntries(entries);
-      const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
-      resetForm();
-      render();
-      alert(msg);
     });
 
     $('printBtn').addEventListener('click', () => window.print());
@@ -813,6 +903,5 @@
       render();
     }
     init();
-  </script>
-</body>
+  </script></body>
 </html>
