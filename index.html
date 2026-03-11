@@ -1243,5 +1243,75 @@
 
     init();
   </script>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD-9P0nPPXv-IPVIVryx0UTpayFc8mxKjQ",
+  authDomain: "dear-siel.firebaseapp.com",
+  projectId: "dear-siel",
+  storageBucket: "dear-siel.firebasestorage.app",
+  messagingSenderId: "712873106670",
+  appId: "1:712873106670:web:5bc8ea020649e4ee1867ff"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const logsCol = collection(db, "logs");
+
+function makeCloudId(entry){
+  return `${entry.date}__${entry.segment}`;
+}
+
+window.upsertEntryToCloud = async function(entry){
+  const id = makeCloudId(entry);
+  await setDoc(doc(db, "logs", id), entry);
+};
+
+window.deleteEntryFromCloud = async function(date, segment){
+  const id = `${date}__${segment}`;
+  await deleteDoc(doc(db, "logs", id));
+};
+
+window.syncFromCloudOnce = async function(){
+  const snap = await getDocs(logsCol);
+  const entries = snap.docs.map(d => d.data());
+
+  entries.sort((a,b)=>{
+    const d=(b.date||'').localeCompare(a.date||'');
+    if(d!==0) return d;
+    return (b.updatedAt||'').localeCompare(a.updatedAt||'');
+  });
+
+  localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
+  return entries;
+};
+
+onSnapshot(logsCol,(snap)=>{
+  const entries = snap.docs.map(d=>d.data());
+
+  entries.sort((a,b)=>{
+    const d=(b.date||'').localeCompare(a.date||'');
+    if(d!==0) return d;
+    return (b.updatedAt||'').localeCompare(a.updatedAt||'');
+  });
+
+  localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
+
+  if(window.render){
+    window.render();
+  }
+});
+</script>
 </body>
 </html>
+
