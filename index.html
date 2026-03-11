@@ -10,6 +10,8 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root{
       --bg:#f8fafc;
@@ -23,23 +25,26 @@
       --danger-soft:#fef2f2;
       --ok:#059669;
       --ok-soft:#ecfdf5;
+      --warn:#d97706;
+      --warn-soft:#fff7ed;
       --shadow:0 8px 24px rgba(15,23,42,0.06);
       --radius:18px;
     }
 
     *{ box-sizing:border-box; }
+
     body{
       margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
       background:var(--bg);
       color:var(--text);
       line-height:1.55;
     }
 
     .wrap{
-      max-width:900px;
+      max-width:980px;
       margin:0 auto;
-      padding:20px 16px 60px;
+      padding:18px 16px 70px;
     }
 
     .top-actions{
@@ -82,7 +87,7 @@
 
     .desc{
       color:var(--muted);
-      font-size:1.05rem;
+      font-size:1.02rem;
       margin-bottom:18px;
     }
 
@@ -112,12 +117,16 @@
     }
 
     .grid.two{
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .grid.three{
+      grid-template-columns:repeat(3,minmax(0,1fr));
     }
 
     .stats{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
     }
 
@@ -136,7 +145,7 @@
     }
 
     .stat-value{
-      font-size:2rem;
+      font-size:1.9rem;
       font-weight:800;
       line-height:1.1;
     }
@@ -173,8 +182,12 @@
 
     .inline-grid{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
+    }
+
+    .inline-grid.three{
+      grid-template-columns:repeat(3,minmax(0,1fr));
     }
 
     .radio-group, .event-group{
@@ -225,6 +238,21 @@
       font-weight:700;
     }
 
+    .badge.warn{
+      background:var(--warn-soft);
+      color:var(--warn);
+    }
+
+    .badge.ok{
+      background:var(--ok-soft);
+      color:var(--ok);
+    }
+
+    .badge.danger{
+      background:var(--danger-soft);
+      color:var(--danger);
+    }
+
     .mini{
       color:var(--muted);
       font-size:0.9rem;
@@ -233,7 +261,7 @@
 
     .record-grid{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px 14px;
       margin-top:14px;
       font-size:0.98rem;
@@ -255,6 +283,14 @@
       background:var(--accent-soft);
       border:1px solid #bfdbfe;
       white-space:pre-wrap;
+    }
+
+    .summary-box{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:var(--shadow);
     }
 
     .actions{
@@ -312,12 +348,6 @@
       border:1px solid #fecaca;
     }
 
-    .divider{
-      height:1px;
-      background:var(--border);
-      margin:22px 0;
-    }
-
     .empty{
       padding:14px;
       border-radius:14px;
@@ -327,10 +357,24 @@
       font-size:0.95rem;
     }
 
-    @media (max-width:700px){
-      .grid.two,
+    .chart-wrap{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      box-shadow:var(--shadow);
+    }
+
+    canvas{
+      width:100% !important;
+      height:280px !important;
+    }
+
+    @media (max-width:740px){
+      .grid.two, .grid.three,
       .stats,
       .inline-grid,
+      .inline-grid.three,
       .record-grid{
         grid-template-columns:1fr;
       }
@@ -359,8 +403,8 @@
 
     <p class="desc">
       Dear Siel — 시엘을 이해하기 위한 사랑의 기록입니다.
-      하루의 흐름을 가정, 학교, 늘봄, 센터, 이동·대기·외부 5개의 구간으로 기록하고
-      부모가 함께 오늘의 내용을 이어서 완성해 갈 수 있도록 돕습니다.
+      하루의 흐름을 가정, 학교, 늘봄, 센터, 이동·대기·외부 5개의 구간으로 기록하고,
+      엄마와 아빠가 수정 버튼을 통해 오늘의 내용을 함께 완성해 갈 수 있도록 돕습니다.
     </p>
 
     <!-- 오늘 기록 -->
@@ -369,11 +413,11 @@
       <div id="todayRecordsBox"></div>
     </section>
 
-    <!-- 입력/수정 -->
+    <!-- 입력 / 수정 -->
     <section class="card" id="formSection">
-      <h2 class="section-title">입력 / 수정</h2>
+      <h2 class="section-title">입력 / 수정 / 삭제</h2>
       <div class="subtle" style="margin-bottom:12px;">
-        오늘 같은 날짜 + 같은 구간 기록은 첫 저장이 기준이 됩니다.
+        오늘 같은 날짜 + 같은 구간의 첫 저장은 기준 기록으로 보존됩니다.
         기존 기록을 바꾸려면 반드시 <strong>수정</strong> 버튼을 눌러 주세요.
       </div>
 
@@ -429,7 +473,7 @@
 
       <div class="field">
         <label for="medChangeNote">약 변화 메모</label>
-        <textarea id="medChangeNote" class="small-textarea" placeholder="증량 이유, 반응, 상담 내용 등을 적어보세요"></textarea>
+        <textarea id="medChangeNote" class="small-textarea" placeholder="증량 이유, 반응, 상담 내용을 적어보세요"></textarea>
       </div>
 
       <div class="inline-grid">
@@ -460,7 +504,7 @@
           <input id="sleepyTime" type="time">
         </div>
         <div class="field">
-          <label for="carAnxiety">차 이동 불안 (0~5)</label>
+          <label for="carAnxiety">차 불안 (0~5)</label>
           <input id="carAnxiety" type="number" min="0" max="5">
         </div>
       </div>
@@ -525,19 +569,52 @@
       <div id="saveStatus" class="status"></div>
     </section>
 
+    <!-- 위험도 예측 -->
+    <section class="card">
+      <h2 class="section-title">위험도 예측</h2>
+      <div id="riskPredictionBox"></div>
+    </section>
+
+    <!-- 패턴 자동 발견 -->
+    <section class="card">
+      <h2 class="section-title">패턴 자동 발견</h2>
+      <div id="patternDiscoveryBox"></div>
+    </section>
+
+    <!-- 특수 그래프 -->
+    <section class="card">
+      <h2 class="section-title">특수 그래프</h2>
+      <div class="grid">
+        <div class="chart-wrap">
+          <div class="subtle" style="margin-bottom:8px;">턱 행동 변화</div>
+          <canvas id="chinChart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <div class="subtle" style="margin-bottom:8px;">수면 ↔ 행동 관계</div>
+          <canvas id="sleepBehaviorChart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <div class="subtle" style="margin-bottom:8px;">차 이동 / 회복 흐름</div>
+          <canvas id="carRecoveryChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 전체 기록 -->
     <section class="card">
       <h2 class="section-title">전체 기록</h2>
       <div id="recordsBox"></div>
     </section>
 
+    <!-- 평균 요약 -->
     <section class="card">
-      <h2 class="section-title">요약 보기</h2>
+      <h2 class="section-title">평균 요약</h2>
       <div class="stats" id="statsBox"></div>
     </section>
   </div>
 
   <script>
-    const STORAGE_KEY = 'dear_siel_entries_v2';
+    const STORAGE_KEY = 'dear_siel_entries_v3';
 
     const ROLE_OPTIONS = [
       { id:'mom', label:'엄마' },
@@ -566,6 +643,9 @@
     ];
 
     let editingKey = null;
+    let chinChart = null;
+    let sleepBehaviorChart = null;
+    let carRecoveryChart = null;
 
     const $ = (id) => document.getElementById(id);
 
@@ -664,6 +744,58 @@
       };
     }
 
+    function formatNum(v){
+      const n = Number(v || 0);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function calcSleepHours(entry){
+      if (!entry.sleepTime || !entry.finalWakeTime) return 0;
+
+      const [sh, sm] = entry.sleepTime.split(':').map(Number);
+      const [fh, fm] = entry.finalWakeTime.split(':').map(Number);
+
+      let start = sh * 60 + sm;
+      let end = fh * 60 + fm;
+
+      if (end <= start) end += 24 * 60;
+
+      const wakePenalty = formatNum(entry.wakeUps) * 15;
+      const total = Math.max(0, end - start - wakePenalty + formatNum(entry.napMinutes));
+      return total / 60;
+    }
+
+    function calcBehaviorScore(entry){
+      return (
+        formatNum(entry.tantrumCount) * 2 +
+        formatNum(entry.chinCount) * 2 +
+        formatNum(entry.aggressionCount) * 2 +
+        formatNum(entry.anxietyCount) * 1 +
+        formatNum(entry.carAnxiety) * 1
+      );
+    }
+
+    function riskLabel(entry){
+      const sleep = calcSleepHours(entry);
+      const score = calcBehaviorScore(entry);
+
+      if (
+        sleep < 7 ||
+        formatNum(entry.carAnxiety) >= 4 ||
+        formatNum(entry.anxietyCount) >= 4 ||
+        score >= 12
+      ) return '높음';
+
+      if (
+        sleep < 8 ||
+        formatNum(entry.carAnxiety) >= 2 ||
+        formatNum(entry.anxietyCount) >= 2 ||
+        score >= 6
+      ) return '주의';
+
+      return '안정';
+    }
+
     function loadEntryToForm(date, segment){
       const entries = loadEntries();
       const target = entries.find(e => e.date === date && e.segment === segment);
@@ -705,7 +837,7 @@
 
       $('saveBtn').textContent = '수정 저장';
       showStatus('기존 기록을 불러왔습니다. 내용을 수정한 뒤 저장해 주세요.');
-      document.getElementById('formSection').scrollIntoView({ behavior:'smooth', block:'start' });
+      $('formSection').scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
     function deleteEntry(date, segment){
@@ -746,27 +878,13 @@
       hideStatus();
     }
 
-    function formatNum(v){
-      const n = Number(v || 0);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    function calcSleepHours(entry){
-      if (!entry.sleepTime || !entry.finalWakeTime) return 0;
-      const [sh, sm] = entry.sleepTime.split(':').map(Number);
-      const [fh, fm] = entry.finalWakeTime.split(':').map(Number);
-
-      let start = sh * 60 + sm;
-      let end = fh * 60 + fm;
-
-      if (end <= start) end += 24 * 60;
-
-      const wakePenalty = formatNum(entry.wakeUps) * 15;
-      const total = Math.max(0, end - start - wakePenalty + formatNum(entry.napMinutes));
-      return total / 60;
-    }
-
     function renderRecordCard(e){
+      const risk = riskLabel(e);
+      const riskClass =
+        risk === '높음' ? 'danger' :
+        risk === '주의' ? 'warn' :
+        'ok';
+
       return `
         <div class="card">
           <div class="record-header">
@@ -774,8 +892,9 @@
               <div class="record-title">${e.date} · ${segmentLabel(e.segment)}</div>
               <div class="badge-row">
                 <span class="badge">${roleLabel(e.role)}</span>
+                <span class="badge ${riskClass}">위험도 ${risk}</span>
                 ${e.medChangeType ? `<span class="badge">약 ${e.medChangeType}</span>` : ''}
-                ${e.events?.length ? e.events.map(ev => `<span class="badge">${ev}</span>`).join('') : ''}
+                ${(e.events || []).map(ev => `<span class="badge">${ev}</span>`).join('')}
               </div>
             </div>
           </div>
@@ -877,11 +996,174 @@
       `;
     }
 
+    function renderRiskPrediction(entries){
+      const today = new Date().toISOString().slice(0, 10);
+      const todayEntries = entries.filter(e => e.date === today);
+
+      if (!todayEntries.length){
+        $('riskPredictionBox').innerHTML = `
+          <div class="empty">오늘 기록이 쌓이면 위험도 예측이 여기에 표시됩니다.</div>
+        `;
+        return;
+      }
+
+      const latest = todayEntries[todayEntries.length - 1];
+      const risk = riskLabel(latest);
+
+      const reasons = [];
+      if (calcSleepHours(latest) < 8) reasons.push('수면 시간이 평소보다 짧음');
+      if (formatNum(latest.carAnxiety) >= 2) reasons.push('차 이동 불안이 올라감');
+      if (formatNum(latest.anxietyCount) >= 2) reasons.push('불안 수치가 높음');
+      if (formatNum(latest.tantrumCount) >= 1) reasons.push('텐트럼이 이미 나타남');
+      if ((latest.events || []).includes('수면 흔들림')) reasons.push('수면 흔들림 사건이 있음');
+
+      $('riskPredictionBox').innerHTML = `
+        <div class="summary-box">
+          <div class="badge-row">
+            <span class="badge ${risk === '높음' ? 'danger' : risk === '주의' ? 'warn' : 'ok'}">오늘 위험도 ${risk}</span>
+          </div>
+          <div class="mini">${reasons.length ? reasons.join(' · ') : '뚜렷한 위험 신호는 적습니다.'}</div>
+        </div>
+      `;
+    }
+
+    function renderPatternDiscovery(entries){
+      if (entries.length < 3){
+        $('patternDiscoveryBox').innerHTML = `
+          <div class="empty">기록이 3개 이상 쌓이면 자동 패턴을 찾아 보여줍니다.</div>
+        `;
+        return;
+      }
+
+      const patterns = [];
+
+      const lowSleep = entries.filter(e => calcSleepHours(e) < 8);
+      const normalSleep = entries.filter(e => calcSleepHours(e) >= 8);
+      if (lowSleep.length && normalSleep.length){
+        const lowSleepChin = lowSleep.reduce((a,e) => a + formatNum(e.chinCount), 0) / lowSleep.length;
+        const normalSleepChin = normalSleep.reduce((a,e) => a + formatNum(e.chinCount), 0) / normalSleep.length;
+        if (lowSleepChin > normalSleepChin){
+          patterns.push(`수면 8시간 미만일 때 턱 행동이 더 많이 나타나는 경향이 있습니다.`);
+        }
+      }
+
+      const carDays = entries.filter(e => formatNum(e.carAnxiety) >= 2 || (e.events || []).includes('차 이동'));
+      const nonCarDays = entries.filter(e => !(formatNum(e.carAnxiety) >= 2 || (e.events || []).includes('차 이동')));
+      if (carDays.length && nonCarDays.length){
+        const carTantrum = carDays.reduce((a,e) => a + formatNum(e.tantrumCount), 0) / carDays.length;
+        const nonCarTantrum = nonCarDays.reduce((a,e) => a + formatNum(e.tantrumCount), 0) / nonCarDays.length;
+        if (carTantrum > nonCarTantrum){
+          patterns.push(`차 이동이 있는 날 텐트럼이 더 올라가는 흐름이 보입니다.`);
+        }
+      }
+
+      const centerDays = entries.filter(e => e.segment === 'center');
+      const transitionDays = entries.filter(e => e.segment === 'transition');
+      if (centerDays.length && transitionDays.length){
+        const centerAnxiety = centerDays.reduce((a,e) => a + formatNum(e.anxietyCount), 0) / centerDays.length;
+        const transitionAnxiety = transitionDays.reduce((a,e) => a + formatNum(e.anxietyCount), 0) / transitionDays.length;
+        if (transitionAnxiety > centerAnxiety){
+          patterns.push(`센터 자체보다 이동·대기·외부 구간에서 불안이 더 올라가는 흐름이 있습니다.`);
+        }
+      }
+
+      if (!patterns.length){
+        patterns.push('아직 뚜렷한 자동 패턴은 적지만, 기록이 더 쌓이면 더 정확해집니다.');
+      }
+
+      $('patternDiscoveryBox').innerHTML = patterns.map(p => `
+        <div class="summary-box">${p}</div>
+      `).join('');
+    }
+
+    function renderCharts(entries){
+      const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+
+      const labels = sorted.map(e => `${e.date.slice(5)} · ${segmentLabel(e.segment)}`);
+      const chinValues = sorted.map(e => formatNum(e.chinCount));
+      const sleepValues = sorted.map(e => Number(calcSleepHours(e).toFixed(1)));
+      const behaviorValues = sorted.map(e => calcBehaviorScore(e));
+      const carValues = sorted.map(e => formatNum(e.carAnxiety));
+      const tantrumValues = sorted.map(e => formatNum(e.tantrumCount));
+
+      if (chinChart) chinChart.destroy();
+      if (sleepBehaviorChart) sleepBehaviorChart.destroy();
+      if (carRecoveryChart) carRecoveryChart.destroy();
+
+      chinChart = new Chart($('chinChart'), {
+        type:'line',
+        data:{
+          labels,
+          datasets:[{
+            label:'턱 행동',
+            data:chinValues,
+            borderColor:'#2563eb',
+            backgroundColor:'rgba(37,99,235,0.15)',
+            fill:true,
+            tension:0.25
+          }]
+        },
+        options:{ responsive:true, maintainAspectRatio:false }
+      });
+
+      sleepBehaviorChart = new Chart($('sleepBehaviorChart'), {
+        type:'bar',
+        data:{
+          labels,
+          datasets:[
+            {
+              label:'수면시간',
+              data:sleepValues,
+              backgroundColor:'rgba(37,99,235,0.6)'
+            },
+            {
+              label:'행동점수',
+              data:behaviorValues,
+              backgroundColor:'rgba(217,119,6,0.6)'
+            }
+          ]
+        },
+        options:{ responsive:true, maintainAspectRatio:false }
+      });
+
+      carRecoveryChart = new Chart($('carRecoveryChart'), {
+        type:'line',
+        data:{
+          labels,
+          datasets:[
+            {
+              label:'차 불안',
+              data:carValues,
+              borderColor:'#dc2626',
+              backgroundColor:'rgba(220,38,38,0.12)',
+              fill:true,
+              tension:0.25
+            },
+            {
+              label:'텐트럼',
+              data:tantrumValues,
+              borderColor:'#059669',
+              backgroundColor:'rgba(5,150,105,0.10)',
+              fill:true,
+              tension:0.25
+            }
+          ]
+        },
+        options:{ responsive:true, maintainAspectRatio:false }
+      });
+    }
+
     function render(){
       const entries = loadEntries();
       renderTodayRecords(entries);
       renderAllRecords(entries);
       renderStats(entries);
+      renderRiskPrediction(entries);
+      renderPatternDiscovery(entries);
+
+      if (entries.length){
+        renderCharts(entries);
+      }
     }
 
     $('saveBtn').addEventListener('click', () => {
