@@ -1205,14 +1205,9 @@
         }
 
         saveEntries(entries);
-
-        if (typeof window.saveLogToCloud === 'function'){
-          try{
-            window.saveLogToCloud(entry);
-          }catch(e){
-            console.log('클라우드 저장 오류', e);
-          }
-        }
+if (savedEntry) {
+  await saveToCloud(savedEntry);
+}
 
         const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
         resetForm();
@@ -1311,7 +1306,21 @@ onSnapshot(logsCol,(snap)=>{
     window.render();
   }
 });
+// Firebase 저장
+async function saveToCloud(entry){
+  try{
+    if (window.upsertEntryToCloud) {
+      await window.upsertEntryToCloud(entry);
+      console.log("클라우드 저장 완료");
+    } else {
+      console.log("upsertEntryToCloud 함수가 아직 없습니다.");
+    }
+  }catch(e){
+    console.log("클라우드 저장 오류", e);
+  }
+}
 </script>
 </body>
 </html>
+
 
