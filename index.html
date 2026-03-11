@@ -285,7 +285,12 @@
       <div class="events" id="eventsBox"></div>
     </div>
 
-    <div class="field"><label>메모</label><textarea id="notes"></textarea></div>
+  <div class="field"><label>메모</label><textarea id="notes"></textarea></div>
+
+<div class="field">
+<label>오늘 시엘에게 쓰는 한 줄 편지</label>
+<textarea id="dailyLetter" placeholder="오늘 시엘에게 전하고 싶은 한 문장을 적어보세요"></textarea>
+</div>
     <button id="saveBtn">저장</button>
     <div id="saveStatus" class="note" style="display:none; margin-top:10px;"></div>
     <div class="mini" style="margin-top:8px;">같은 날짜 + 같은 구간으로 저장하면 수정됩니다.</div>
@@ -486,8 +491,9 @@
         bodyStimCount: $('bodyStimCount').value,
         participation: $('participation').value,
         mealAmount: $('mealAmount').value,
-        notes: $('notes').value,
-        events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i => i.value),
+notes: $('notes').value,
+dailyLetter: $('dailyLetter').value,
+events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i => i.value),
         updatedAt: new Date().toLocaleString('ko-KR')
       };
     }
@@ -942,6 +948,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
