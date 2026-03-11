@@ -11,33 +11,6 @@
   <meta name="theme-color" content="#ffffff">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyXXXX",
-  authDomain: "dear-siel.firebaseapp.com",
-  projectId: "dear-siel",
-  storageBucket: "dear-siel.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.saveLogToCloud = async function(entry){
-  try{
-    await addDoc(collection(db,"logs"), entry);
-    console.log("Firebase 저장 성공");
-  }catch(e){
-    console.log("Firebase 저장 실패", e);
-  }
-}
-
-</script>
 
   <style>
     :root{
@@ -147,10 +120,6 @@ window.saveLogToCloud = async function(entry){
       grid-template-columns:repeat(2,minmax(0,1fr));
     }
 
-    .grid.three{
-      grid-template-columns:repeat(3,minmax(0,1fr));
-    }
-
     .stats{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -211,10 +180,6 @@ window.saveLogToCloud = async function(entry){
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
-    }
-
-    .inline-grid.three{
-      grid-template-columns:repeat(3,minmax(0,1fr));
     }
 
     .radio-group, .event-group{
@@ -398,10 +363,9 @@ window.saveLogToCloud = async function(entry){
     }
 
     @media (max-width:740px){
-      .grid.two, .grid.three,
+      .grid.two,
       .stats,
       .inline-grid,
-      .inline-grid.three,
       .record-grid{
         grid-template-columns:1fr;
       }
@@ -434,13 +398,11 @@ window.saveLogToCloud = async function(entry){
       엄마와 아빠가 수정 버튼을 통해 오늘의 내용을 함께 완성해 갈 수 있도록 돕습니다.
     </p>
 
-    <!-- 오늘 기록 -->
     <section class="card">
       <h2 class="section-title">오늘 기록</h2>
       <div id="todayRecordsBox"></div>
     </section>
 
-    <!-- 입력 / 수정 -->
     <section class="card" id="formSection">
       <h2 class="section-title">입력 / 수정 / 삭제</h2>
       <div class="subtle" style="margin-bottom:12px;">
@@ -596,19 +558,16 @@ window.saveLogToCloud = async function(entry){
       <div id="saveStatus" class="status"></div>
     </section>
 
-    <!-- 위험도 예측 -->
     <section class="card">
       <h2 class="section-title">위험도 예측</h2>
       <div id="riskPredictionBox"></div>
     </section>
 
-    <!-- 패턴 자동 발견 -->
     <section class="card">
       <h2 class="section-title">패턴 자동 발견</h2>
       <div id="patternDiscoveryBox"></div>
     </section>
 
-    <!-- 특수 그래프 -->
     <section class="card">
       <h2 class="section-title">특수 그래프</h2>
       <div class="grid">
@@ -627,13 +586,11 @@ window.saveLogToCloud = async function(entry){
       </div>
     </section>
 
-    <!-- 전체 기록 -->
     <section class="card">
       <h2 class="section-title">전체 기록</h2>
       <div id="recordsBox"></div>
     </section>
 
-    <!-- 평균 요약 -->
     <section class="card">
       <h2 class="section-title">평균 요약</h2>
       <div class="stats" id="statsBox"></div>
@@ -675,6 +632,12 @@ window.saveLogToCloud = async function(entry){
     let carRecoveryChart = null;
 
     const $ = (id) => document.getElementById(id);
+
+    function getKSTDateString(){
+      const now = new Date();
+      const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+      return kst.toISOString().slice(0, 10);
+    }
 
     function roleLabel(role){
       const found = ROLE_OPTIONS.find(r => r.id === role);
@@ -867,9 +830,18 @@ window.saveLogToCloud = async function(entry){
       $('formSection').scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
-    function deleteEntry(date, segment){
+    async function deleteEntry(date, segment){
       const next = loadEntries().filter(e => !(e.date === date && e.segment === segment));
       saveEntries(next);
+
+      if (window.deleteEntryFromCloud) {
+        try{
+          await window.deleteEntryFromCloud(date, segment);
+        }catch(e){
+          console.log('클라우드 삭제 오류', e);
+        }
+      }
+
       resetForm();
       render();
       showStatus('기록이 삭제되었습니다.');
@@ -879,7 +851,7 @@ window.saveLogToCloud = async function(entry){
       editingKey = null;
       $('saveBtn').textContent = '저장';
 
-      $('date').value = new Date().toISOString().slice(0, 10);
+      $('date').value = getKSTDateString();
       $('editorName').value = roleLabel(currentRole());
       $('sleepNaitoMg').value = '';
       $('risperidoneMg').value = '';
@@ -954,7 +926,7 @@ window.saveLogToCloud = async function(entry){
     }
 
     function renderTodayRecords(entries){
-      const today = new Date().toISOString().slice(0, 10);
+      const today = getKSTDateString();
       const todayEntries = entries
         .filter(e => e.date === today)
         .sort((a,b) => SEGMENT_OPTIONS.findIndex(s => s.id === a.segment) - SEGMENT_OPTIONS.findIndex(s => s.id === b.segment));
@@ -1024,7 +996,7 @@ window.saveLogToCloud = async function(entry){
     }
 
     function renderRiskPrediction(entries){
-      const today = new Date().toISOString().slice(0, 10);
+      const today = getKSTDateString();
       const todayEntries = entries.filter(e => e.date === today);
 
       if (!todayEntries.length){
@@ -1193,7 +1165,9 @@ window.saveLogToCloud = async function(entry){
       }
     }
 
-   $('saveBtn').addEventListener('click', async () => {
+    window.render = render;
+
+    $('saveBtn').addEventListener('click', async () => {
       try{
         const entry = getFormData();
 
@@ -1206,13 +1180,11 @@ window.saveLogToCloud = async function(entry){
         const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
         let savedEntry = null;
 
-        // 같은 날짜 + 같은 구간의 첫 기록은 보존
         if (idx >= 0 && editingKey === null){
           showStatus('이미 오늘 이 구간의 기록이 있습니다. 수정 버튼을 눌러 이어서 수정해 주세요.', true);
           return;
         }
 
-        // 수정 모드일 때만 덮어쓰기 허용
         if (editingKey !== null){
           const targetIndex = entries.findIndex(e => makeEntryKey(e) === editingKey);
 
@@ -1221,21 +1193,25 @@ window.saveLogToCloud = async function(entry){
               ...entry,
               updatedAt: new Date().toLocaleString('ko-KR')
             };
+            savedEntry = entries[targetIndex];
           } else {
             showStatus('수정할 기존 기록을 찾지 못했습니다. 다시 수정 버튼을 눌러 주세요.', true);
             return;
           }
         } else {
-          entries.push({
+          const newEntry = {
             ...entry,
             updatedAt: new Date().toLocaleString('ko-KR')
-          });
+          };
+          entries.push(newEntry);
+          savedEntry = newEntry;
         }
 
         saveEntries(entries);
-if (savedEntry) {
-  await saveToCloud(savedEntry);
-}
+
+        if (savedEntry && window.saveToCloud) {
+          await window.saveToCloud(savedEntry);
+        }
 
         const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
         resetForm();
@@ -1258,99 +1234,105 @@ if (savedEntry) {
       URL.revokeObjectURL(a.href);
     }
 
-    function init(){
+    async function init(){
       initChoices();
       resetForm();
+
+      if (window.syncFromCloudOnce) {
+        try{
+          await window.syncFromCloudOnce();
+        }catch(e){
+          console.log('클라우드 초기 동기화 실패', e);
+        }
+      }
+
       render();
     }
 
     init();
   </script>
+
   <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  getDocs,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      deleteDoc,
+      getDocs,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD-9P0nPPXv-IPVIVryx0UTpayFc8mxKjQ",
-  authDomain: "dear-siel.firebaseapp.com",
-  projectId: "dear-siel",
-  storageBucket: "dear-siel.firebasestorage.app",
-  messagingSenderId: "712873106670",
-  appId: "1:712873106670:web:5bc8ea020649e4ee1867ff"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-9P0nPPXv-IPVIVryx0UTpayFc8mxKjQ",
+      authDomain: "dear-siel.firebaseapp.com",
+      projectId: "dear-siel",
+      storageBucket: "dear-siel.firebasestorage.app",
+      messagingSenderId: "712873106670",
+      appId: "1:712873106670:web:5bc8ea020649e4ee1867ff"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const logsCol = collection(db, "logs");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const logsCol = collection(db, "logs");
 
-function makeCloudId(entry){
-  return `${entry.date}__${entry.segment}`;
-}
-
-window.upsertEntryToCloud = async function(entry){
-  const id = makeCloudId(entry);
-  await setDoc(doc(db, "logs", id), entry);
-};
-
-window.deleteEntryFromCloud = async function(date, segment){
-  const id = `${date}__${segment}`;
-  await deleteDoc(doc(db, "logs", id));
-};
-
-window.syncFromCloudOnce = async function(){
-  const snap = await getDocs(logsCol);
-  const entries = snap.docs.map(d => d.data());
-
-  entries.sort((a,b)=>{
-    const d=(b.date||'').localeCompare(a.date||'');
-    if(d!==0) return d;
-    return (b.updatedAt||'').localeCompare(a.updatedAt||'');
-  });
-
-  localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
-  return entries;
-};
-
-onSnapshot(logsCol,(snap)=>{
-  const entries = snap.docs.map(d=>d.data());
-
-  entries.sort((a,b)=>{
-    const d=(b.date||'').localeCompare(a.date||'');
-    if(d!==0) return d;
-    return (b.updatedAt||'').localeCompare(a.updatedAt||'');
-  });
-
-  localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
-
-  if(window.render){
-    window.render();
-  }
-});
-// Firebase 저장
-async function saveToCloud(entry){
-  try{
-    if (window.upsertEntryToCloud) {
-      await window.upsertEntryToCloud(entry);
-      console.log("클라우드 저장 완료");
-    } else {
-      console.log("upsertEntryToCloud 함수가 아직 없습니다.");
+    function makeCloudId(entry){
+      return `${entry.date}__${entry.segment}`;
     }
-  }catch(e){
-    console.log("클라우드 저장 오류", e);
-  }
-}
-</script>
+
+    window.upsertEntryToCloud = async function(entry){
+      const id = makeCloudId(entry);
+      await setDoc(doc(db, "logs", id), entry);
+    };
+
+    window.deleteEntryFromCloud = async function(date, segment){
+      const id = `${date}__${segment}`;
+      await deleteDoc(doc(db, "logs", id));
+    };
+
+    window.syncFromCloudOnce = async function(){
+      const snap = await getDocs(logsCol);
+      const entries = snap.docs.map(d => d.data());
+
+      entries.sort((a,b)=>{
+        const d = (b.date || '').localeCompare(a.date || '');
+        if (d !== 0) return d;
+        return (b.updatedAt || '').localeCompare(a.updatedAt || '');
+      });
+
+      localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
+      return entries;
+    };
+
+    onSnapshot(logsCol, (snap) => {
+      const entries = snap.docs.map(d => d.data());
+
+      entries.sort((a,b)=>{
+        const d = (b.date || '').localeCompare(a.date || '');
+        if (d !== 0) return d;
+        return (b.updatedAt || '').localeCompare(a.updatedAt || '');
+      });
+
+      localStorage.setItem('dear_siel_entries_v3', JSON.stringify(entries));
+
+      if (window.render) {
+        window.render();
+      }
+    });
+
+    window.saveToCloud = async function(entry){
+      try{
+        if (window.upsertEntryToCloud) {
+          await window.upsertEntryToCloud(entry);
+          console.log("클라우드 저장 완료");
+        } else {
+          console.log("upsertEntryToCloud 함수가 아직 없습니다.");
+        }
+      }catch(e){
+        console.log("클라우드 저장 오류", e);
+      }
+    };
+  </script>
 </body>
 </html>
-
-
-
-
