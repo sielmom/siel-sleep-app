@@ -880,13 +880,20 @@ events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i 
 
         const raw = localStorage.getItem(STORAGE_KEY);
         const entries = raw ? JSON.parse(raw) : [];
-        const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
+const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
 
-        if (idx >= 0) {
-          entries[idx] = entry;
-        } else {
-          entries.push(entry);
-        }
+// 이미 기록이 있고 수정모드가 아닐 때
+if (idx >= 0 && editingKey === null) {
+  alert("이미 오늘 이 구간의 기록이 있습니다. 수정 버튼을 눌러 수정해주세요.");
+  return;
+}
+
+// 수정 모드일 때만 덮어쓰기
+if (idx >= 0 && editingKey !== null) {
+  entries[idx] = entry;
+} else {
+  entries.push(entry);
+}
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
         const check = localStorage.getItem(STORAGE_KEY);
@@ -948,6 +955,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
