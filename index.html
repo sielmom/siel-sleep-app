@@ -523,7 +523,7 @@ events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i 
       $('bodyStimCount').value = '0';
       $('participation').value = '0';
       $('mealAmount').value = '보통';
-      $('notes').value = '';
+      $('dailyLetter').value = '';
       document.querySelectorAll('#eventsBox input').forEach(i => i.checked = false);
       renderPrediction();
     }
@@ -948,6 +948,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
