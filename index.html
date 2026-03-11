@@ -10,20 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-    }
-.title{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:28px;
-  font-weight:800;
-}
-
-.title-icon{
-  width:70px;
-  height:70px;
-  border-radius:8px;
-}
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
@@ -50,20 +36,13 @@
     .main { grid-template-columns: 420px 1fr; align-items: start; }
     .two { grid-template-columns: repeat(2, 1fr); }
     .three { grid-template-columns: repeat(3, 1fr); }
-.card{
-  background: var(--card);
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-  border:1px solid var(--border);
-  box-shadow:0 8px 20px rgba(0,0,0,0.06);
-  transition:all 0.2s ease;
-}
-
-.card:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 24px rgba(0,0,0,0.08);
-}
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
     .section-title { margin: 0 0 10px; font-size: 18px; }
     .stat-title { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
     .stat-value { font-size: 28px; font-weight: 700; }
@@ -194,10 +173,7 @@
     <div class="toolbar no-print">
       <button id="printBtn" class="outline-btn">A4 출력 / PDF 저장</button>
       <button id="downloadReportBtn" class="outline-btn">요약 파일 다운로드</button>
-    </div><h1 class="title">
-<img src="icon.png" class="title-icon">
-Dear Siel
-</h1>
+    </div><h1>Dear Siel</h1>
 <div class="sub">Dear Siel — 시엘을 이해하기 위한 사랑의 기록입니다. 하루의 흐름을 가정, 학교, 늘봄, 센터, 이동·대기·외부 5개의 구간으로 기록하고, 행동 트리거 자동 발견과 패턴 분석 기능으로 시엘의 감정과 환경 변화를 더 빠르게 읽을 수 있도록 돕습니다.</div>
 
 <div class="grid top">
@@ -904,20 +880,13 @@ events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i 
 
         const raw = localStorage.getItem(STORAGE_KEY);
         const entries = raw ? JSON.parse(raw) : [];
-const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
+        const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
 
-// 이미 기록이 있고 수정모드가 아닐 때
-if (idx >= 0 && editingKey === null) {
-  alert("이미 오늘 이 구간의 기록이 있습니다. 수정 버튼을 눌러 수정해주세요.");
-  return;
-}
-
-// 수정 모드일 때만 덮어쓰기
-if (idx >= 0 && editingKey !== null) {
-  entries[idx] = entry;
-} else {
-  entries.push(entry);
-}
+        if (idx >= 0) {
+          entries[idx] = entry;
+        } else {
+          entries.push(entry);
+        }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
         const check = localStorage.getItem(STORAGE_KEY);
@@ -979,13 +948,6 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
-
-
-
-
-
-
-
 
 
 
