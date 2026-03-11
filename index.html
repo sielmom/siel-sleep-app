@@ -11,6 +11,33 @@
   <meta name="theme-color" content="#ffffff">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyXXXX",
+  authDomain: "dear-siel.firebaseapp.com",
+  projectId: "dear-siel",
+  storageBucket: "dear-siel.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveLogToCloud = async function(entry){
+  try{
+    await addDoc(collection(db,"logs"), entry);
+    console.log("Firebase 저장 성공");
+  }catch(e){
+    console.log("Firebase 저장 실패", e);
+  }
+}
+
+</script>
 
   <style>
     :root{
@@ -1323,6 +1350,7 @@ async function saveToCloud(entry){
 </script>
 </body>
 </html>
+
 
 
 
