@@ -50,13 +50,20 @@
     .main { grid-template-columns: 420px 1fr; align-items: start; }
     .two { grid-template-columns: repeat(2, 1fr); }
     .three { grid-template-columns: repeat(3, 1fr); }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-    }
+.card{
+  background: var(--card);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 20px rgba(0,0,0,0.06);
+  transition:all 0.2s ease;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(0,0,0,0.08);
+}
     .section-title { margin: 0 0 10px; font-size: 18px; }
     .stat-title { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
     .stat-value { font-size: 28px; font-weight: 700; }
@@ -972,6 +979,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
