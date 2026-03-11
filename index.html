@@ -853,7 +853,7 @@ events: Array.from(document.querySelectorAll('#eventsBox input:checked')).map(i 
           ${e.medChangeNote ? `<div class="note">약 변경 메모: ${e.medChangeNote}</div>` : ''}
           <div style="margin-top:10px;">${e.riskFlags.map(f => `<span class="badge">${f}</span>`).join('')}</div>
           <div style="margin-top:4px;">${(e.events || []).map(eventLabel).map(t => `<span class="badge">${t}</span>`).join('')}</div>
-          ${e.notes ? `<div class="note">${e.notes}</div>` : ''}
+         ${e.dailyLetter ? `<div class="note soft-blue"><strong>오늘 시엘에게 쓰는 한 줄 편지</strong><br>${e.dailyLetter}</div>` : ''}
         </div>
       `).join('') : '<div class="mini">첫 기록을 입력하면 패턴 분석이 시작됩니다.</div>';
     }
@@ -948,6 +948,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
