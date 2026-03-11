@@ -10,6 +10,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
+    }
+.title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.title-icon{
+  width:30px;
+  height:30px;
+}
       --bg: #f8fafc;
       --card: #ffffff;
       --text: #0f172a;
@@ -173,7 +184,10 @@
     <div class="toolbar no-print">
       <button id="printBtn" class="outline-btn">A4 출력 / PDF 저장</button>
       <button id="downloadReportBtn" class="outline-btn">요약 파일 다운로드</button>
-    </div><h1>Dear Siel</h1>
+    </div><h1 class="title">
+<img src="icon.png" class="title-icon">
+Dear Siel
+</h1>
 <div class="sub">Dear Siel — 시엘을 이해하기 위한 사랑의 기록입니다. 하루의 흐름을 가정, 학교, 늘봄, 센터, 이동·대기·외부 5개의 구간으로 기록하고, 행동 트리거 자동 발견과 패턴 분석 기능으로 시엘의 감정과 환경 변화를 더 빠르게 읽을 수 있도록 돕습니다.</div>
 
 <div class="grid top">
@@ -955,6 +969,7 @@ window.saveLogToCloud = async function(data){
 
 </body>
 </html>
+
 
 
 
