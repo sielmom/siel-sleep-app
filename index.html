@@ -911,9 +911,38 @@
       renderPrediction();
       render();
     }
-    init();
-  </script></body>
+init();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD-9P0nPPXv-IPVIVryx0UTpayFc8mxKjQ",
+  authDomain: "dear-siel.firebaseapp.com",
+  projectId: "dear-siel",
+  storageBucket: "dear-siel.firebasestorage.app",
+  messagingSenderId: "712873106670",
+  appId: "1:712873106670:web:5bc8ea020649e4ee1867ff"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveLogToCloud = async function(data){
+  try{
+    await addDoc(collection(db,"logs"), data);
+    console.log("Firebase 저장 성공");
+  }catch(e){
+    console.log("Firebase 저장 오류",e);
+  }
+}
+</script>
+
+</body>
 </html>
+
 
 
 
