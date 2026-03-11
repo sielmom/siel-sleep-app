@@ -1166,7 +1166,7 @@
       }
     }
 
-    $('saveBtn').addEventListener('click', () => {
+   $('saveBtn').addEventListener('click', async () => {
       try{
         const entry = getFormData();
 
@@ -1177,6 +1177,7 @@
 
         let entries = loadEntries();
         const idx = entries.findIndex(e => e.date === entry.date && e.segment === entry.segment);
+        let savedEntry = null;
 
         // 같은 날짜 + 같은 구간의 첫 기록은 보존
         if (idx >= 0 && editingKey === null){
@@ -1322,5 +1323,6 @@ async function saveToCloud(entry){
 </script>
 </body>
 </html>
+
 
 
