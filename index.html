@@ -1322,15 +1322,6 @@ HTML
       initTabs();
       buildSegmentsUI();
       resetForm();
-
-      if (window.syncFromCloudOnce) {
-        try{
-          await window.syncFromCloudOnce();
-        }catch(e){
-          console.log('클라우드 초기 동기화 실패', e);
-        }
-      }
-
       render();
     }
 
@@ -1341,12 +1332,9 @@ HTML
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
     import {
       getFirestore,
-      collection,
       doc,
       setDoc,
-      deleteDoc,
-      getDocs,
-      onSnapshot
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1360,7 +1348,6 @@ HTML
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const logsCol = collection(db, "logs");
 
     function makeCloudId(entry){
       return entry.date;
@@ -1374,36 +1361,6 @@ HTML
     window.deleteEntryFromCloud = async function(date){
       await deleteDoc(doc(db, "logs", date));
     };
-
-    window.syncFromCloudOnce = async function(){
-      const snap = await getDocs(logsCol);
-      const entries = snap.docs.map(d => d.data());
-
-      entries.sort((a,b)=>{
-        const d = (b.date || '').localeCompare(a.date || '');
-        if (d !== 0) return d;
-        return (b.updatedAt || '').localeCompare(a.updatedAt || '');
-      });
-
-      localStorage.setItem('dear_siel_daily_v1', JSON.stringify(entries));
-      return entries;
-    };
-
-    onSnapshot(logsCol, (snap) => {
-      const entries = snap.docs.map(d => d.data());
-
-      entries.sort((a,b)=>{
-        const d = (b.date || '').localeCompare(a.date || '');
-        if (d !== 0) return d;
-        return (b.updatedAt || '').localeCompare(a.updatedAt || '');
-      });
-
-      localStorage.setItem('dear_siel_daily_v1', JSON.stringify(entries));
-
-      if (window.render) {
-        window.render();
-      }
-    });
 
     window.saveToCloud = async function(entry){
       try{
