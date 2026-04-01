@@ -432,7 +432,7 @@ textarea {
     <div class="summary-box" id="autoSummary">아직 기록이 없습니다. 첫 기록을 저장하면 자동 요약이 생성됩니다.</div>
 
     <div class="footer-note">
-      저장은 기기 내부(localStorage)에 즉시 반영됩니다. 중요한 자료는 JSON 백업 버튼으로 함께 보관해 주세요.
+      저장은 기기 내부(localStorage)에 즉시 반영됩니다. 같은 날짜에 다시 저장하면 새 카드가 추가되지 않고 그 날짜 기록이 최종본으로 덮어써집니다. 중요한 자료는 JSON 백업 버튼으로 함께 보관해 주세요.
     </div>
   </section>
 </div>
@@ -541,7 +541,7 @@ textarea {
     function getFormData() {
       const sleepHours = calcSleepHours(els.sleepStart.value, els.sleepEnd.value);
       return {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        id: null,
         date: els.recordDate.value,
         writer: els.writer.value,
         sleepStart: els.sleepStart.value,
@@ -559,7 +559,8 @@ textarea {
         selfInjury: Number(els.selfInjury.value),
         energy: Number(els.energy.value),
         notes: els.notes.value.trim(),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
     }
 
@@ -654,7 +655,7 @@ textarea {
     }
 
     function renderList() {
-      const sorted = [...records].sort((a,b) => (a.date < b.date ? 1 : -1) || (a.createdAt < b.createdAt ? 1 : -1));
+      const sorted = [...records].sort((a,b) => (a.date < b.date ? 1 : -1) || ((a.updatedAt || a.createdAt) < (b.updatedAt || b.createdAt) ? 1 : -1));
       els.recordList.innerHTML = '';
       els.emptyState.style.display = sorted.length ? 'none' : 'block';
 
@@ -665,7 +666,7 @@ textarea {
           <div class="item-head">
             <div>
               <div class="item-date">${escapeHtml(record.date)}</div>
-              <div class="muted">기록자 ${escapeHtml(record.writer)} · 구간 ${escapeHtml(record.segment)}</div>
+              <div class="muted">최종 수정 ${escapeHtml(record.writer)} · 구간 ${escapeHtml(record.segment)}</div>
             </div>
             <div>
               <button class="btn btn-danger" data-id="${record.id}">삭제</button>
@@ -758,11 +759,27 @@ textarea {
     els.saveBtn.addEventListener('click', () => {
       const record = getFormData();
       if (!validateRecord(record)) return;
-      records.push(record);
-      saveRecords();
-      renderAll();
-      resetFormKeepDate();
-      alert('기록이 저장되었습니다.');
+
+      const existingIndex = records.findIndex(r => r.date === record.date);
+
+      if (existingIndex >= 0) {
+        const existing = records[existingIndex];
+        record.id = existing.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+        record.createdAt = existing.createdAt || record.createdAt;
+        record.updatedAt = new Date().toISOString();
+        records[existingIndex] = record;
+        saveRecords();
+        renderAll();
+        resetFormKeepDate();
+        alert('해당 날짜 기록을 최종본으로 덮어써서 저장했습니다.');
+      } else {
+        record.id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+        records.push(record);
+        saveRecords();
+        renderAll();
+        resetFormKeepDate();
+        alert('기록이 저장되었습니다.');
+      }
     });
 
     els.todayFillBtn.addEventListener('click', () => {
