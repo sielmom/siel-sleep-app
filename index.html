@@ -1,1379 +1,177 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dear Siel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dear Siel</title>
 
-  <link rel="icon" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ffffff">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#ffffff">
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    :root{
-      --bg:#f8fafc;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e2e8f0;
-      --accent:#2563eb;
-      --accent-soft:#eff6ff;
-      --danger:#dc2626;
-      --danger-soft:#fef2f2;
-      --ok:#059669;
-      --ok-soft:#ecfdf5;
-      --warn:#d97706;
-      --warn-soft:#fff7ed;
-      --shadow:0 8px 24px rgba(15,23,42,0.06);
-      --radius:18px;
-    }
-
-    *{ box-sizing:border-box; }
-
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.55;
-    }
-
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:18px 16px 70px;
-    }
-
-    .top-actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:18px;
-    }
-
-    .btn{
-      width:100%;
-      border:none;
-      border-radius:16px;
-      padding:14px 16px;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--border);
-      box-shadow:var(--shadow);
-    }
-
-    .title{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin:6px 0 8px;
-      font-size:2rem;
-      font-weight:800;
-      line-height:1.1;
-    }
-
-    .title-icon{
-      width:30px;
-      height:30px;
-      border-radius:8px;
-      flex:0 0 auto;
-    }
-
-    .desc{
-      color:var(--muted);
-      font-size:1.02rem;
-      margin-bottom:18px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-      margin-bottom:16px;
-    }
-
-    .section-title{
-      font-size:1.12rem;
-      font-weight:800;
-      margin:0 0 12px;
-    }
-
-    .subtle{
-      color:var(--muted);
-      font-size:0.95rem;
-    }
-
-    .inline-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .field{
-      margin-bottom:14px;
-    }
-
-    label{
-      display:block;
-      font-size:0.95rem;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-
-    input, select, textarea{
-      width:100%;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:12px 14px;
-      font-size:16px;
-      background:#fff;
-      color:var(--text);
-    }
-
-    textarea{
-      min-height:92px;
-      resize:vertical;
-    }
-
-    .small-textarea{
-      min-height:74px;
-    }
-
-    .radio-group{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-
-    .radio-item{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:#fff;
-      font-size:14px;
-    }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-
-    .tab-btn{
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      background:#fff;
-      border:1px solid var(--border);
-      font-size:14px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .tab-btn.active{
-      background:var(--accent-soft);
-      color:var(--accent);
-      border-color:#bfdbfe;
-    }
-
-    .tab-pane{
-      display:none;
-    }
-
-    .tab-pane.active{
-      display:block;
-    }
-
-    .segment-card{
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:14px;
-      margin-bottom:14px;
-      background:#fff;
-    }
-
-    .segment-title{
-      font-size:1rem;
-      font-weight:800;
-      margin-bottom:10px;
-    }
-
-    .slider-row{
-      margin-bottom:14px;
-    }
-
-    .slider-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:0.95rem;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-
-    .slider-value{
-      color:var(--accent);
-      font-weight:800;
-    }
-
-    input[type="range"]{
-      padding:0;
-      border:none;
-      background:transparent;
-    }
-
-    .actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
-    .outline-btn, .danger-btn, .primary-btn{
-      border:none;
-      border-radius:12px;
-      padding:11px 14px;
-      font-size:14px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .outline-btn{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--border);
-    }
-
-    .primary-btn{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .danger-btn{
-      background:var(--danger-soft);
-      color:var(--danger);
-      border:1px solid #fecaca;
-    }
-
-    .status{
-      margin-top:10px;
-      padding:12px 14px;
-      border-radius:14px;
-      font-size:0.95rem;
-      display:none;
-    }
-
-    .status.ok{
-      display:block;
-      background:var(--ok-soft);
-      color:var(--ok);
-      border:1px solid #a7f3d0;
-    }
-
-    .status.error{
-      display:block;
-      background:var(--danger-soft);
-      color:var(--danger);
-      border:1px solid #fecaca;
-    }
-
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      margin-top:8px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:5px 10px;
-      border-radius:999px;
-      background:var(--accent-soft);
-      color:var(--accent);
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .badge.warn{
-      background:var(--warn-soft);
-      color:var(--warn);
-    }
-
-    .badge.ok{
-      background:var(--ok-soft);
-      color:var(--ok);
-    }
-
-    .badge.danger{
-      background:var(--danger-soft);
-      color:var(--danger);
-    }
-
-    .record-title{
-      font-size:1.05rem;
-      font-weight:800;
-    }
-
-    .mini{
-      color:var(--muted);
-      font-size:0.9rem;
-      margin-top:8px;
-    }
-
-    .record-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px 14px;
-      margin-top:14px;
-      font-size:0.98rem;
-    }
-
-    .note{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:#f8fafc;
-      border:1px solid var(--border);
-      white-space:pre-wrap;
-    }
-
-    .letter{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:var(--accent-soft);
-      border:1px solid #bfdbfe;
-      white-space:pre-wrap;
-    }
-
-    .summary-box{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid var(--border);
-      background:#fff;
-      box-shadow:var(--shadow);
-      margin-bottom:10px;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .stat-card{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:16px;
-      box-shadow:var(--shadow);
-    }
-
-    .stat-label{
-      font-size:0.95rem;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .stat-value{
-      font-size:1.9rem;
-      font-weight:800;
-      line-height:1.1;
-    }
-
-    .chart-wrap{
-      background:#fff;
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:12px;
-      box-shadow:var(--shadow);
-      margin-bottom:12px;
-    }
-
-    canvas{
-      width:100% !important;
-      height:260px !important;
-    }
-
-    @media (max-width:740px){
-      .inline-grid,
-      .record-grid,
-      .stats,
-      .top-actions{
-        grid-template-columns:1fr;
-      }
-
-      .title{
-        font-size:1.85rem;
-      }
-    }
-  </style>
+<style>
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:#f5f7fb;
+  margin:0;
+  padding:20px;
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+button{
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  width:100%;
+  margin-top:10px;
+}
+input, textarea, select{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top-actions">
-      <button class="btn" onclick="window.print()">A4 출력 / PDF 저장</button>
-      <button class="btn" onclick="downloadJson()">요약 파일 다운로드</button>
-    </div>
 
-    <h1 class="title">
-      <img src="icon.png" class="title-icon" alt="Dear Siel 아이콘">
-      Dear Siel
-    </h1>
+<h1>💌 Dear Siel</h1>
 
-    <p class="desc">
-      Dear Siel — 시엘을 이해하기 위한 사랑의 기록입니다.
-      하루 기록 1개 안에 수면, 약, 구간별 행동, 감정과 요약을 함께 저장합니다.
-    </p>
+<div class="card">
+<h3>오늘 기록</h3>
 
-    <section class="card">
-      <h2 class="section-title">오늘 기록</h2>
-      <div id="todayRecordsBox"></div>
-    </section>
+<label>날짜</label>
+<input type="date" id="date">
 
-    <section class="card" id="formSection">
-      <h2 class="section-title">입력 / 수정 / 삭제</h2>
+<label>기록자</label>
+<select id="writer">
+<option value="엄마">엄마</option>
+<option value="아빠">아빠</option>
+</select>
 
-      <div class="inline-grid">
-        <div class="field">
-          <label for="date">날짜</label>
-          <input id="date" type="date">
-        </div>
-        <div class="field">
-          <label>기록자</label>
-          <div class="radio-group" id="roleBox"></div>
-        </div>
-      </div>
+<label>수면시간(시간)</label>
+<input type="number" id="sleep">
 
-      <div class="field">
-        <label for="editorName">기록자 이름</label>
-        <input id="editorName" type="text" placeholder="엄마 / 아빠">
-      </div>
+<label>턱 행동 (0~10)</label>
+<input type="range" id="chin" min="0" max="10" value="0">
+<span id="chinVal">0</span>
 
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="sleepTab">수면 / 약</button>
-        <button class="tab-btn" data-tab="behaviorTab">행동</button>
-        <button class="tab-btn" data-tab="summaryTab">식사 / 감정 / 요약</button>
-      </div>
+<label>텐트럼 (0~10)</label>
+<input type="range" id="tantrum" min="0" max="10" value="0">
+<span id="tantrumVal">0</span>
 
-      <div class="tab-pane active" id="sleepTab">
-        <div class="inline-grid">
-          <div class="field">
-            <label for="sleepTime">취침 시간</label>
-            <input id="sleepTime" type="time">
-          </div>
-          <div class="field">
-            <label for="finalWakeTime">기상 시간</label>
-            <input id="finalWakeTime" type="time">
-          </div>
-        </div>
+<label>불안 (0~10)</label>
+<input type="range" id="anxiety" min="0" max="10" value="0">
+<span id="anxietyVal">0</span>
 
-        <div class="inline-grid">
-          <div class="field">
-            <label for="napMinutes">낮잠(분)</label>
-            <input id="napMinutes" type="number" min="0">
-          </div>
-          <div class="field">
-            <label for="wakeUps">중간 깸 횟수</label>
-            <input id="wakeUps" type="number" min="0">
-          </div>
-        </div>
+<label>순응도 (0~10)</label>
+<input type="range" id="compliance" min="0" max="10" value="0">
+<span id="complianceVal">0</span>
 
-        <div class="inline-grid">
-          <div class="field">
-            <label for="sleepQuality">수면 질</label>
-            <select id="sleepQuality">
-              <option value="좋음">좋음</option>
-              <option value="보통" selected>보통</option>
-              <option value="나쁨">나쁨</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="sleepNote">수면 특이사항</label>
-            <textarea id="sleepNote" class="small-textarea" placeholder="새벽 각성, 입면 지연 등"></textarea>
-          </div>
-        </div>
+<label>오늘 시엘에게 한 줄 편지</label>
+<textarea id="letter"></textarea>
 
-        <div class="inline-grid">
-          <div class="field">
-            <label for="sleepNaitoMg">슬리나이토 (mg)</label>
-            <input id="sleepNaitoMg" type="number" step="0.1" min="0">
-          </div>
-          <div class="field">
-            <label for="risperidoneMg">리스페리돈 (mg)</label>
-            <input id="risperidoneMg" type="number" step="0.1" min="0">
-          </div>
-        </div>
+<button onclick="saveData()">저장</button>
+<button onclick="deleteData()" style="background:#dc2626;">오늘 기록 삭제</button>
+</div>
 
-        <div class="inline-grid">
-          <div class="field">
-            <label for="abilifyMg">아빌리파이 (mg)</label>
-            <input id="abilifyMg" type="number" step="0.1" min="0">
-          </div>
-          <div class="field">
-            <label for="medChangeType">약 변화</label>
-            <select id="medChangeType">
-              <option value="">선택 안 함</option>
-              <option value="유지">유지</option>
-              <option value="증량">증량</option>
-              <option value="감량">감량</option>
-              <option value="추가">추가</option>
-              <option value="중단">중단</option>
-            </select>
-          </div>
-        </div>
+<div class="card">
+<h3>그래프</h3>
+<canvas id="chart"></canvas>
+</div>
 
-        <div class="field">
-          <label for="medChangeNote">약 변화 메모</label>
-          <textarea id="medChangeNote" class="small-textarea" placeholder="증량 이유, 반응, 상담 내용"></textarea>
-        </div>
-      </div>
+<script>
+const STORAGE_KEY = "dear_siel_data";
+const today = new Date().toISOString().slice(0,10);
+document.getElementById("date").value = today;
 
-      <div class="tab-pane" id="behaviorTab">
-        <div id="segmentsBox"></div>
+["chin","tantrum","anxiety","compliance"].forEach(id=>{
+  const el = document.getElementById(id);
+  const val = document.getElementById(id+"Val");
+  el.oninput = ()=> val.innerText = el.value;
+});
 
-        <div class="field">
-          <label for="behaviorMemo">행동 상황 메모</label>
-          <textarea id="behaviorMemo" placeholder="공격 상황, 텐트럼 상황, 감정 추정, 순응도 상황 등을 적어보세요"></textarea>
-        </div>
-      </div>
+function loadAll(){
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
 
-      <div class="tab-pane" id="summaryTab">
-        <div class="inline-grid">
-          <div class="field">
-            <label for="mealAmount">식사량</label>
-            <select id="mealAmount">
-              <option value="적음">적음</option>
-              <option value="보통" selected>보통</option>
-              <option value="많음">많음</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="snackNote">간식 / 음식 특이사항</label>
-            <input id="snackNote" type="text" placeholder="간식, 거부 음식 등">
-          </div>
-        </div>
+function saveAll(data){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
 
-        <div class="inline-grid">
-          <div class="field">
-            <label for="dayCondition">컨디션</label>
-            <select id="dayCondition">
-              <option value="좋음">좋음</option>
-              <option value="보통" selected>보통</option>
-              <option value="나쁨">나쁨</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="dayEmotion">오늘 감정</label>
-            <input id="dayEmotion" type="text" placeholder="불안, 예민, 안정 등">
-          </div>
-        </div>
+function saveData(){
+  let data = loadAll();
+  const date = document.getElementById("date").value;
 
-        <div class="field">
-          <label for="goodPoint">좋은 점</label>
-          <textarea id="goodPoint" class="small-textarea" placeholder="작은 성공, 좋았던 순간"></textarea>
-        </div>
+  const entry = {
+    date: date,
+    writer: document.getElementById("writer").value,
+    sleep: document.getElementById("sleep").value,
+    chin: document.getElementById("chin").value,
+    tantrum: document.getElementById("tantrum").value,
+    anxiety: document.getElementById("anxiety").value,
+    compliance: document.getElementById("compliance").value,
+    letter: document.getElementById("letter").value
+  };
 
-        <div class="field">
-          <label for="hardPoint">힘들었던 점</label>
-          <textarea id="hardPoint" class="small-textarea" placeholder="힘들었던 상황"></textarea>
-        </div>
+  const index = data.findIndex(d=>d.date===date);
 
-        <div class="field">
-          <label for="dailyLetter">오늘 시엘에게 쓰는 한 줄 편지</label>
-          <textarea id="dailyLetter" class="small-textarea" placeholder="오늘 시엘에게 전하고 싶은 한 문장"></textarea>
-        </div>
+  if(index >= 0){
+    data[index] = entry; // 수정
+  }else{
+    data.push(entry); // 새 기록
+  }
 
-        <div class="field">
-          <label for="nextTry">다음에 해볼 것</label>
-          <textarea id="nextTry" class="small-textarea" placeholder="내일 시도할 것"></textarea>
-        </div>
-      </div>
+  saveAll(data);
+  drawChart();
+  alert("저장되었습니다");
+}
 
-      <div class="actions">
-        <button class="primary-btn" id="saveBtn">저장</button>
-        <button class="outline-btn" type="button" onclick="resetForm()">새 입력으로 돌아가기</button>
-        <button class="danger-btn" type="button" id="deleteBtn">오늘 기록 삭제</button>
-      </div>
+function deleteData(){
+  let data = loadAll();
+  const date = document.getElementById("date").value;
+  data = data.filter(d=>d.date!==date);
+  saveAll(data);
+  drawChart();
+  alert("삭제되었습니다");
+}
 
-      <div id="saveStatus" class="status"></div>
-    </section>
+function drawChart(){
+  const data = loadAll();
+  const labels = data.map(d=>d.date);
+  const chin = data.map(d=>d.chin);
 
-    <section class="card">
-      <h2 class="section-title">위험도 예측</h2>
-      <div id="riskPredictionBox"></div>
-    </section>
+  const ctx = document.getElementById("chart");
 
-    <section class="card">
-      <h2 class="section-title">패턴 자동 발견</h2>
-      <div id="patternDiscoveryBox"></div>
-    </section>
+  if(window.chart) window.chart.destroy();
 
-    <section class="card">
-      <h2 class="section-title">특수 그래프</h2>
-      <div class="chart-wrap">
-        <div class="subtle" style="margin-bottom:8px;">턱 행동 변화</div>
-        <canvas id="chinChart"></canvas>
-      </div>
-      <div class="chart-wrap">
-        <div class="subtle" style="margin-bottom:8px;">수면 ↔ 행동 관계</div>
-        <canvas id="sleepBehaviorChart"></canvas>
-      </div>
-      <div class="chart-wrap">
-        <div class="subtle" style="margin-bottom:8px;">불안 / 순응도 흐름</div>
-        <canvas id="anxietyComplianceChart"></canvas>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">전체 기록</h2>
-      <div id="recordsBox"></div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">평균 요약</h2>
-      <div class="stats" id="statsBox"></div>
-    </section>
-  </div>
-
-  <script>
-    const STORAGE_KEY = 'dear_siel_daily_v1';
-
-    const ROLE_OPTIONS = [
-      { id:'mom', label:'엄마' },
-      { id:'dad', label:'아빠' }
-    ];
-
-    const SEGMENTS = [
-      { id:'home', label:'가정' },
-      { id:'school', label:'학교' },
-      { id:'after', label:'늘봄' },
-      { id:'center', label:'센터' },
-      { id:'move', label:'이동' }
-    ];
-
-    const METRICS = [
-      { id:'chin', label:'턱 행동' },
-      { id:'tantrum', label:'텐트럼' },
-      { id:'selfStim', label:'자해/자극' },
-      { id:'anxiety', label:'불안' },
-      { id:'sensory', label:'감각과민' },
-      { id:'compliance', label:'순응도' }
-    ];
-
-    let editingKey = null;
-    let chinChart = null;
-    let sleepBehaviorChart = null;
-    let anxietyComplianceChart = null;
-
-    const $ = (id) => document.getElementById(id);
-
-    function getKSTDateString(){
-      const now = new Date();
-      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-      const kst = new Date(utc + 9 * 60 * 60 * 1000);
-      return kst.toISOString().slice(0, 10);
+  window.chart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:labels,
+      datasets:[{
+        label:'턱 행동',
+        data:chin,
+        borderColor:'blue'
+      }]
     }
+  });
+}
 
-    function roleLabel(role){
-      return ROLE_OPTIONS.find(r => r.id === role)?.label || '';
-    }
+drawChart();
+</script>
 
-    function currentRole(){
-      return document.querySelector('input[name="role"]:checked')?.value || 'mom';
-    }
-
-    function loadEntries(){
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    }
-
-    function saveEntries(entries){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
-
-    function showStatus(message, isError = false){
-      const box = $('saveStatus');
-      box.textContent = message;
-      box.className = 'status ' + (isError ? 'error' : 'ok');
-    }
-
-    function hideStatus(){
-      $('saveStatus').style.display = 'none';
-      $('saveStatus').className = 'status';
-      $('saveStatus').textContent = '';
-    }
-
-    function initChoices(){
-      $('roleBox').innerHTML = ROLE_OPTIONS.map((r, i) => `
-        <label class="radio-item">
-          <input type="radio" name="role" value="${r.id}" ${i === 0 ? 'checked' : ''}>
-          ${r.label}
-        </label>
-      `).join('');
-    }
-
-    function initTabs(){
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-          btn.classList.add('active');
-          $(btn.dataset.tab).classList.add('active');
-        });
-      });
-    }
-
-    function buildSegmentsUI(){
-      $('segmentsBox').innerHTML = SEGMENTS.map(seg => `
-        <div class="segment-card">
-          <div class="segment-title">${seg.label}</div>
-
-          ${METRICS.map(metric => `
-            <div class="slider-row">
-              <div class="slider-head">
-                <span>${metric.label}</span>
-                <span class="slider-value" id="${seg.id}_${metric.id}_value">0</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                step="1"
-                value="0"
-                id="${seg.id}_${metric.id}"
-                oninput="document.getElementById('${seg.id}_${metric.id}_value').textContent=this.value"
-              >
-            </div>
-          `).join('')}
-        </div>
-      `).join('');
-    }
-
-    function collectSegments(){
-      const result = {};
-      SEGMENTS.forEach(seg => {
-        result[seg.id] = {};
-        METRICS.forEach(metric => {
-          result[seg.id][metric.id] = Number($(seg.id + '_' + metric.id).value || 0);
-        });
-      });
-      return result;
-    }
-
-    function fillSegments(segments){
-      SEGMENTS.forEach(seg => {
-        METRICS.forEach(metric => {
-          const val = segments?.[seg.id]?.[metric.id] ?? 0;
-          $(seg.id + '_' + metric.id).value = val;
-          $(seg.id + '_' + metric.id + '_value').textContent = val;
-        });
-      });
-    }
-
-    function calcSleepHours(entry){
-      if (!entry.sleepTime || !entry.finalWakeTime) return 0;
-
-      const [sh, sm] = entry.sleepTime.split(':').map(Number);
-      const [fh, fm] = entry.finalWakeTime.split(':').map(Number);
-
-      let start = sh * 60 + sm;
-      let end = fh * 60 + fm;
-
-      if (end <= start) end += 24 * 60;
-
-      const wakePenalty = Number(entry.wakeUps || 0) * 15;
-      const total = Math.max(0, end - start - wakePenalty + Number(entry.napMinutes || 0));
-      return total / 60;
-    }
-
-    function sumMetric(entry, metricId){
-      return SEGMENTS.reduce((acc, seg) => acc + Number(entry.segments?.[seg.id]?.[metricId] || 0), 0);
-    }
-
-    function avgMetric(entry, metricId){
-      return sumMetric(entry, metricId) / SEGMENTS.length;
-    }
-
-    function behaviorScore(entry){
-      const chin = sumMetric(entry, 'chin');
-      const tantrum = sumMetric(entry, 'tantrum');
-      const selfStim = sumMetric(entry, 'selfStim');
-      const anxiety = sumMetric(entry, 'anxiety');
-      const sensory = sumMetric(entry, 'sensory');
-      const compliance = avgMetric(entry, 'compliance');
-
-      return (
-        chin * 2 +
-        tantrum * 2 +
-        selfStim * 1.5 +
-        anxiety * 1.5 +
-        sensory * 1.2 -
-        compliance
-      );
-    }
-
-    function riskLabel(entry){
-      let score = 0;
-
-      if (calcSleepHours(entry) < 7) score += 2;
-      if (avgMetric(entry, 'anxiety') >= 7) score += 2;
-      if (avgMetric(entry, 'sensory') >= 7) score += 2;
-      if (avgMetric(entry, 'chin') >= 7) score += 2;
-      if (avgMetric(entry, 'tantrum') >= 7) score += 2;
-      if (avgMetric(entry, 'compliance') <= 3) score += 2;
-
-      if (score >= 6) return '높음';
-      if (score >= 3) return '주의';
-      return '안정';
-    }
-
-    function getFormData(){
-      return {
-        date: $('date').value,
-        role: currentRole(),
-        editorName: $('editorName').value.trim(),
-        sleepTime: $('sleepTime').value,
-        finalWakeTime: $('finalWakeTime').value,
-        napMinutes: $('napMinutes').value,
-        wakeUps: $('wakeUps').value,
-        sleepQuality: $('sleepQuality').value,
-        sleepNote: $('sleepNote').value.trim(),
-        sleepNaitoMg: $('sleepNaitoMg').value,
-        risperidoneMg: $('risperidoneMg').value,
-        abilifyMg: $('abilifyMg').value,
-        medChangeType: $('medChangeType').value,
-        medChangeNote: $('medChangeNote').value.trim(),
-        segments: collectSegments(),
-        behaviorMemo: $('behaviorMemo').value.trim(),
-        mealAmount: $('mealAmount').value,
-        snackNote: $('snackNote').value.trim(),
-        dayCondition: $('dayCondition').value,
-        dayEmotion: $('dayEmotion').value.trim(),
-        goodPoint: $('goodPoint').value.trim(),
-        hardPoint: $('hardPoint').value.trim(),
-        dailyLetter: $('dailyLetter').value.trim(),
-        nextTry: $('nextTry').value.trim()
-      };
-    }
-
-    function loadEntryToForm(date){
-      const entry = loadEntries().find(e => e.date === date);
-      if (!entry) return;
-
-      editingKey = entry.date;
-
-      $('date').value = entry.date || '';
-      $('editorName').value = entry.editorName || roleLabel(entry.role);
-
-      const roleInput = document.querySelector(`input[name="role"][value="${entry.role}"]`);
-      if (roleInput) roleInput.checked = true;
-
-      $('sleepTime').value = entry.sleepTime || '21:00';
-      $('finalWakeTime').value = entry.finalWakeTime || '06:30';
-      $('napMinutes').value = entry.napMinutes || '0';
-      $('wakeUps').value = entry.wakeUps || '0';
-      $('sleepQuality').value = entry.sleepQuality || '보통';
-      $('sleepNote').value = entry.sleepNote || '';
-      $('sleepNaitoMg').value = entry.sleepNaitoMg || '';
-      $('risperidoneMg').value = entry.risperidoneMg || '';
-      $('abilifyMg').value = entry.abilifyMg || '';
-      $('medChangeType').value = entry.medChangeType || '';
-      $('medChangeNote').value = entry.medChangeNote || '';
-
-      fillSegments(entry.segments);
-
-      $('behaviorMemo').value = entry.behaviorMemo || '';
-      $('mealAmount').value = entry.mealAmount || '보통';
-      $('snackNote').value = entry.snackNote || '';
-      $('dayCondition').value = entry.dayCondition || '보통';
-      $('dayEmotion').value = entry.dayEmotion || '';
-      $('goodPoint').value = entry.goodPoint || '';
-      $('hardPoint').value = entry.hardPoint || '';
-      $('dailyLetter').value = entry.dailyLetter || '';
-      $('nextTry').value = entry.nextTry || '';
-
-      $('saveBtn').textContent = '수정 저장';
-      showStatus('기존 기록을 불러왔습니다. 수정한 뒤 저장해 주세요.');
-      $('formSection').scrollIntoView({ behavior:'smooth', block:'start' });
-    }
-
-    async function deleteEntry(date){
-      const next = loadEntries().filter(e => e.date !== date);
-      saveEntries(next);
-
-      if (window.deleteEntryFromCloud) {
-        try{
-          await window.deleteEntryFromCloud(date);
-        }catch(e){
-          console.log('클라우드 삭제 오류', e);
-        }
-      }
-
-      resetForm();
-      render();
-      showStatus('기록이 삭제되었습니다.');
-    }
-
-    function resetForm(){
-      editingKey = null;
-      $('saveBtn').textContent = '저장';
-
-      $('date').value = getKSTDateString();
-      $('editorName').value = roleLabel(currentRole());
-
-      $('sleepTime').value = '21:00';
-      $('finalWakeTime').value = '06:30';
-      $('napMinutes').value = '0';
-      $('wakeUps').value = '0';
-      $('sleepQuality').value = '보통';
-      $('sleepNote').value = '';
-
-      $('sleepNaitoMg').value = '';
-      $('risperidoneMg').value = '';
-      $('abilifyMg').value = '';
-      $('medChangeType').value = '';
-      $('medChangeNote').value = '';
-
-      fillSegments(null);
-
-      $('behaviorMemo').value = '';
-      $('mealAmount').value = '보통';
-      $('snackNote').value = '';
-      $('dayCondition').value = '보통';
-      $('dayEmotion').value = '';
-      $('goodPoint').value = '';
-      $('hardPoint').value = '';
-      $('dailyLetter').value = '';
-      $('nextTry').value = '';
-
-      hideStatus();
-    }
-
-    function renderRecordCard(e){
-      const risk = riskLabel(e);
-      const riskClass = risk === '높음' ? 'danger' : risk === '주의' ? 'warn' : 'ok';
-
-      return `
-        <div class="card">
-          <div class="record-title">${e.date}</div>
-          <div class="badge-row">
-            <span class="badge">${roleLabel(e.role)}</span>
-            <span class="badge ${riskClass}">위험도 ${risk}</span>
-            ${e.medChangeType ? `<span class="badge">약 ${e.medChangeType}</span>` : ''}
-            <span class="badge">수면 ${calcSleepHours(e).toFixed(1)}시간</span>
-          </div>
-
-          <div class="mini">입력/수정: ${e.editorName || roleLabel(e.role)} · ${e.updatedAt || '-'}</div>
-
-          <div class="record-grid">
-            <div>턱 행동 합계 ${sumMetric(e, 'chin')}</div>
-            <div>텐트럼 합계 ${sumMetric(e, 'tantrum')}</div>
-            <div>자해/자극 합계 ${sumMetric(e, 'selfStim')}</div>
-            <div>불안 평균 ${avgMetric(e, 'anxiety').toFixed(1)}</div>
-            <div>감각과민 평균 ${avgMetric(e, 'sensory').toFixed(1)}</div>
-            <div>순응도 평균 ${avgMetric(e, 'compliance').toFixed(1)}</div>
-            <div>식사 ${e.mealAmount || '-'}</div>
-            <div>컨디션 ${e.dayCondition || '-'}</div>
-          </div>
-
-          ${e.sleepNote ? `<div class="note"><strong>수면 특이사항</strong><br>${e.sleepNote}</div>` : ''}
-          ${e.behaviorMemo ? `<div class="note"><strong>행동 상황 메모</strong><br>${e.behaviorMemo}</div>` : ''}
-          ${e.dailyLetter ? `<div class="letter"><strong>오늘 시엘에게 쓰는 한 줄 편지</strong><br>${e.dailyLetter}</div>` : ''}
-
-          <div class="actions">
-            <button class="outline-btn" onclick="loadEntryToForm('${e.date}')">수정</button>
-            <button class="danger-btn" onclick="deleteEntry('${e.date}')">삭제</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderTodayRecords(entries){
-      const today = getKSTDateString();
-      const todayEntry = entries.find(e => e.date === today);
-
-      if (!todayEntry){
-        $('todayRecordsBox').innerHTML = `
-          <div class="empty">
-            오늘 저장된 기록이 아직 없습니다.
-            아래에서 오늘 기록을 입력해 주세요.
-          </div>
-        `;
-        return;
-      }
-
-      $('todayRecordsBox').innerHTML = renderRecordCard(todayEntry);
-    }
-
-    function renderAllRecords(entries){
-      const sorted = [...entries].sort((a,b) => {
-        const d = b.date.localeCompare(a.date);
-        if (d !== 0) return d;
-        return (b.updatedAt || '').localeCompare(a.updatedAt || '');
-      });
-
-      if (!sorted.length){
-        $('recordsBox').innerHTML = `<div class="empty">아직 저장된 기록이 없습니다.</div>`;
-        return;
-      }
-
-      $('recordsBox').innerHTML = sorted.map(renderRecordCard).join('');
-    }
-
-    function renderStats(entries){
-      if (!entries.length){
-        $('statsBox').innerHTML = `
-          <div class="stat-card"><div class="stat-label">평균 수면</div><div class="stat-value">-</div></div>
-          <div class="stat-card"><div class="stat-label">평균 턱 행동</div><div class="stat-value">-</div></div>
-          <div class="stat-card"><div class="stat-label">평균 텐트럼</div><div class="stat-value">-</div></div>
-          <div class="stat-card"><div class="stat-label">평균 불안</div><div class="stat-value">-</div></div>
-        `;
-        return;
-      }
-
-      const avgSleep = entries.reduce((a,e) => a + calcSleepHours(e), 0) / entries.length;
-      const avgChin = entries.reduce((a,e) => a + sumMetric(e, 'chin'), 0) / entries.length;
-      const avgTantrum = entries.reduce((a,e) => a + sumMetric(e, 'tantrum'), 0) / entries.length;
-      const avgAnxiety = entries.reduce((a,e) => a + avgMetric(e, 'anxiety'), 0) / entries.length;
-
-      $('statsBox').innerHTML = `
-        <div class="stat-card">
-          <div class="stat-label">평균 수면</div>
-          <div class="stat-value">${avgSleep.toFixed(1)}시간</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">평균 턱 행동</div>
-          <div class="stat-value">${avgChin.toFixed(1)}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">평균 텐트럼</div>
-          <div class="stat-value">${avgTantrum.toFixed(1)}</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">평균 불안</div>
-          <div class="stat-value">${avgAnxiety.toFixed(1)}</div>
-        </div>
-      `;
-    }
-
-    function renderRiskPrediction(entries){
-      const today = getKSTDateString();
-      const todayEntry = entries.find(e => e.date === today);
-
-      if (!todayEntry){
-        $('riskPredictionBox').innerHTML = `
-          <div class="empty">오늘 기록이 쌓이면 위험도 예측이 여기에 표시됩니다.</div>
-        `;
-        return;
-      }
-
-      const risk = riskLabel(todayEntry);
-      const reasons = [];
-
-      if (calcSleepHours(todayEntry) < 7) reasons.push('수면 시간이 짧음');
-      if (avgMetric(todayEntry, 'anxiety') >= 7) reasons.push('불안 평균이 높음');
-      if (avgMetric(todayEntry, 'sensory') >= 7) reasons.push('감각과민이 높음');
-      if (avgMetric(todayEntry, 'chin') >= 7) reasons.push('턱 행동 강도가 높음');
-      if (avgMetric(todayEntry, 'compliance') <= 3) reasons.push('순응도가 낮음');
-
-      $('riskPredictionBox').innerHTML = `
-        <div class="summary-box">
-          <div class="badge-row">
-            <span class="badge ${risk === '높음' ? 'danger' : risk === '주의' ? 'warn' : 'ok'}">오늘 위험도 ${risk}</span>
-          </div>
-          <div class="mini">${reasons.length ? reasons.join(' · ') : '뚜렷한 위험 신호는 적습니다.'}</div>
-        </div>
-      `;
-    }
-
-    function renderPatternDiscovery(entries){
-      if (entries.length < 3){
-        $('patternDiscoveryBox').innerHTML = `
-          <div class="empty">기록이 3개 이상 쌓이면 자동 패턴을 보여줍니다.</div>
-        `;
-        return;
-      }
-
-      const patterns = [];
-
-      const lowSleep = entries.filter(e => calcSleepHours(e) < 8);
-      const normalSleep = entries.filter(e => calcSleepHours(e) >= 8);
-      if (lowSleep.length && normalSleep.length){
-        const lowSleepChin = lowSleep.reduce((a,e) => a + sumMetric(e, 'chin'), 0) / lowSleep.length;
-        const normalSleepChin = normalSleep.reduce((a,e) => a + sumMetric(e, 'chin'), 0) / normalSleep.length;
-        if (lowSleepChin > normalSleepChin){
-          patterns.push('수면 8시간 미만일 때 턱 행동이 더 많이 나타나는 경향이 있습니다.');
-        }
-      }
-
-      const highAnxiety = entries.filter(e => avgMetric(e, 'anxiety') >= 5);
-      const lowAnxiety = entries.filter(e => avgMetric(e, 'anxiety') < 5);
-      if (highAnxiety.length && lowAnxiety.length){
-        const highTantrum = highAnxiety.reduce((a,e) => a + sumMetric(e, 'tantrum'), 0) / highAnxiety.length;
-        const lowTantrum = lowAnxiety.reduce((a,e) => a + sumMetric(e, 'tantrum'), 0) / lowAnxiety.length;
-        if (highTantrum > lowTantrum){
-          patterns.push('불안이 높은 날 텐트럼이 더 올라가는 흐름이 보입니다.');
-        }
-      }
-
-      const lowCompliance = entries.filter(e => avgMetric(e, 'compliance') <= 3);
-      const normalCompliance = entries.filter(e => avgMetric(e, 'compliance') > 3);
-      if (lowCompliance.length && normalCompliance.length){
-        const lowCompAnxiety = lowCompliance.reduce((a,e) => a + avgMetric(e, 'anxiety'), 0) / lowCompliance.length;
-        const normalCompAnxiety = normalCompliance.reduce((a,e) => a + avgMetric(e, 'anxiety'), 0) / normalCompliance.length;
-        if (lowCompAnxiety > normalCompAnxiety){
-          patterns.push('순응도가 낮은 날 불안이 더 높은 경향이 있습니다.');
-        }
-      }
-
-      if (!patterns.length){
-        patterns.push('아직 뚜렷한 자동 패턴은 적지만, 기록이 더 쌓이면 더 정확해집니다.');
-      }
-
-      $('patternDiscoveryBox').innerHTML = patterns.map(p => `
-        <div class="summary-box">${p}</div>
-      `).join('');
-    }
-
-    function renderCharts(entries){
-      const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
-      const labels = sorted.map(e => e.date.slice(5));
-
-      const chinSeries = sorted.map(e => sumMetric(e, 'chin'));
-      const sleepSeries = sorted.map(e => Number(calcSleepHours(e).toFixed(1)));
-      const behaviorSeries = sorted.map(e => Number(behaviorScore(e).toFixed(1)));
-      const anxietySeries = sorted.map(e => Number(avgMetric(e, 'anxiety').toFixed(1)));
-      const complianceSeries = sorted.map(e => Number(avgMetric(e, 'compliance').toFixed(1)));
-
-      if (chinChart) chinChart.destroy();
-      if (sleepBehaviorChart) sleepBehaviorChart.destroy();
-      if (anxietyComplianceChart) anxietyComplianceChart.destroy();
-
-      chinChart = new Chart($('chinChart'), {
-        type:'line',
-        data:{
-          labels,
-          datasets:[{
-            label:'턱 행동',
-            data:chinSeries,
-            borderColor:'#2563eb',
-            backgroundColor:'rgba(37,99,235,0.15)',
-            fill:true,
-            tension:0.25
-          }]
-        },
-        options:{ responsive:true, maintainAspectRatio:false }
-      });
-
-      sleepBehaviorChart = new Chart($('sleepBehaviorChart'), {
-        type:'bar',
-        data:{
-          labels,
-          datasets:[
-            {
-              label:'수면시간',
-              data:sleepSeries,
-              backgroundColor:'rgba(37,99,235,0.6)'
-            },
-            {
-              label:'행동점수',
-              data:behaviorSeries,
-              backgroundColor:'rgba(217,119,6,0.6)'
-            }
-          ]
-        },
-        options:{ responsive:true, maintainAspectRatio:false }
-      });
-
-      anxietyComplianceChart = new Chart($('anxietyComplianceChart'), {
-        type:'line',
-        data:{
-          labels,
-          datasets:[
-            {
-              label:'불안 평균',
-              data:anxietySeries,
-              borderColor:'#dc2626',
-              backgroundColor:'rgba(220,38,38,0.12)',
-              fill:true,
-              tension:0.25
-            },
-            {
-              label:'순응도 평균',
-              data:complianceSeries,
-              borderColor:'#059669',
-              backgroundColor:'rgba(5,150,105,0.10)',
-              fill:true,
-              tension:0.25
-            }
-          ]
-        },
-        options:{ responsive:true, maintainAspectRatio:false }
-      });
-    }
-
-    function render(){
-      const entries = loadEntries();
-      renderTodayRecords(entries);
-      renderAllRecords(entries);
-      renderStats(entries);
-      renderRiskPrediction(entries);
-      renderPatternDiscovery(entries);
-
-      if (entries.length){
-        renderCharts(entries);
-      }
-    }
-
-    window.render = render;
-
-    $('saveBtn').addEventListener('click', async () => {
-      try{
-        const entry = getFormData();
-
-        if (!entry.date){
-          showStatus('날짜를 입력해 주세요.', true);
-          return;
-        }
-
-        let entries = loadEntries();
-        const existingIndex = entries.findIndex(e => e.date === entry.date);
-        let savedEntry = null;
-
-        if (editingKey !== null){
-          const targetIndex = entries.findIndex(e => e.date === editingKey);
-
-          if (targetIndex >= 0){
-            entries[targetIndex] = {
-              ...entry,
-              updatedAt: new Date().toLocaleString('ko-KR')
-            };
-            savedEntry = entries[targetIndex];
-          } else {
-            showStatus('수정할 기존 기록을 찾지 못했습니다.', true);
-            return;
-          }
-        } else {
-          if (existingIndex >= 0){
-            entries[existingIndex] = {
-              ...entry,
-              updatedAt: new Date().toLocaleString('ko-KR')
-            };
-            savedEntry = entries[existingIndex];
-          } else {
-            const newEntry = {
-              ...entry,
-              updatedAt: new Date().toLocaleString('ko-KR')
-            };
-            entries.push(newEntry);
-            savedEntry = newEntry;
-          }
-        }
-
-        saveEntries(entries);
-
-        if (savedEntry && window.saveToCloud) {
-          await window.saveToCloud(savedEntry);
-        }
-
-        const msg = editingKey ? '수정 저장되었습니다.' : '저장되었습니다.';
-        resetForm();
-        render();
-        showStatus(msg + ' 오늘 기록 카드에서 확인해 주세요.');
-      }catch(error){
-        showStatus('저장 중 오류가 생겼습니다: ' + error.message, true);
-      }
-    });
-
-    $('deleteBtn').addEventListener('click', async () => {
-      const date = $('date').value || getKSTDateString();
-      await deleteEntry(date);
-    });
-
-    window.loadEntryToForm = loadEntryToForm;
-    window.deleteEntry = deleteEntry;
-
-    function downloadJson(){
-      const blob = new Blob([JSON.stringify(loadEntries(), null, 2)], { type:'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'dear-siel-records.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    async function startApp(){
-      initChoices();
-      initTabs();
-      buildSegmentsUI();
-      resetForm();
-      render();
-    }
-
-    window.startApp = startApp;
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      deleteDoc
-    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD-9P0nPPXv-IPVIVryx0UTpayFc8mxKjQ",
-      authDomain: "dear-siel.firebaseapp.com",
-      projectId: "dear-siel",
-      storageBucket: "dear-siel.firebasestorage.app",
-      messagingSenderId: "712873106670",
-      appId: "1:712873106670:web:5bc8ea020649e4ee1867ff"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    function makeCloudId(entry){
-      return entry.date;
-    }
-
-    window.upsertEntryToCloud = async function(entry){
-      const id = makeCloudId(entry);
-      await setDoc(doc(db, "logs", id), entry);
-    };
-
-    window.deleteEntryFromCloud = async function(date){
-      await deleteDoc(doc(db, "logs", date));
-    };
-
-    window.saveToCloud = async function(entry){
-      try{
-        await window.upsertEntryToCloud(entry);
-        console.log("클라우드 저장 완료");
-      }catch(e){
-        console.log("클라우드 저장 오류", e);
-      }
-    };
-
-    if (window.startApp) {
-      window.startApp();
-    }
-  </script>
 </body>
 </html>
