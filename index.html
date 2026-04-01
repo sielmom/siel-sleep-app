@@ -1,177 +1,799 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dear Siel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디어시엘 수면·행동 앱</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --line: #e5e7eb;
+      --text: #1f2937;
+      --sub: #6b7280;
+      --primary: #4f46e5;
+      --primary-soft: #eef2ff;
+      --danger: #dc2626;
+      --good: #059669;
+      --warn: #d97706;
+      --shadow: 0 8px 24px rgba(17, 24, 39, 0.08);
+      --radius: 18px;
+    }* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
 
-<link rel="icon" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
-<meta name="theme-color" content="#ffffff">
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px;
+}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+.hero {
+  background: linear-gradient(135deg, #ffffff 0%, #eef2ff 100%);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 18px;
+}
 
-<style>
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  background:#f5f7fb;
-  margin:0;
-  padding:20px;
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
 }
-.card{
-  background:white;
-  padding:20px;
-  border-radius:20px;
-  margin-bottom:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.05);
+
+.hero p {
+  margin: 0;
+  color: var(--sub);
+  line-height: 1.6;
 }
-button{
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:#2563eb;
-  color:white;
-  font-size:16px;
-  width:100%;
-  margin-top:10px;
+
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
 }
-input, textarea, select{
-  width:100%;
-  padding:10px;
-  margin-top:5px;
-  margin-bottom:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
 }
-</style>
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.card h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.section-title {
+  margin: 18px 0 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+input, select, textarea, button {
+  font: inherit;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 12px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.range-wrap {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.score {
+  min-width: 56px;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-soft { background: var(--primary-soft); color: var(--primary); }
+.btn-danger { background: #fee2e2; color: var(--danger); }
+.btn-good { background: #d1fae5; color: var(--good); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
+}
+
+.stat .k {
+  color: var(--sub);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.stat .v {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.stat .small {
+  color: var(--sub);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.item {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
+}
+
+.item-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.item-date {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.muted { color: var(--sub); }
+
+.empty {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--sub);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.summary-box {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  background: #fcfcff;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.footer-note {
+  margin-top: 16px;
+  color: var(--sub);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.hidden { display: none; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .form-grid, .form-grid-3, .stats { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; }
+  .top-actions, .form-panel, .danger-zone { display: none !important; }
+  .card, .hero, .item { box-shadow: none; }
+  .wrap { max-width: 100%; padding: 0; }
+}
+
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>디어시엘 수면·행동 기록 앱</h1>
+      <p>하루 기록을 안정적으로 저장하고, 최근 패턴을 한눈에 보고, 진료나 학교 공유용 요약까지 바로 만들 수 있는 최종본입니다.</p>
+      <div class="top-actions">
+        <button class="btn btn-primary" id="saveBtn">기록 저장</button>
+        <button class="btn btn-soft" id="todayFillBtn">오늘 날짜 넣기</button>
+        <button class="btn btn-soft" id="exportBtn">JSON 백업</button>
+        <button class="btn btn-soft" id="csvBtn">CSV 내보내기</button>
+        <button class="btn btn-soft" id="printBtn">인쇄 / PDF 저장</button>
+        <label class="btn btn-soft" for="importFile" style="display:inline-flex;align-items:center;justify-content:center;">백업 불러오기</label>
+        <input id="importFile" type="file" accept="application/json" class="hidden" />
+      </div>
+    </section><div class="grid">
+  <section class="card form-panel">
+    <h2>하루 기록 입력</h2>
 
-<h1>💌 Dear Siel</h1>
+    <div class="form-grid">
+      <div>
+        <label for="recordDate">날짜</label>
+        <input type="date" id="recordDate" />
+      </div>
+      <div>
+        <label for="writer">기록자</label>
+        <select id="writer">
+          <option>엄마</option>
+          <option>아빠</option>
+          <option>학교</option>
+          <option>늘봄</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <div>
+        <label for="sleepStart">잠든 시각</label>
+        <input type="time" id="sleepStart" />
+      </div>
+      <div>
+        <label for="sleepEnd">최종 기상 시각</label>
+        <input type="time" id="sleepEnd" />
+      </div>
+      <div>
+        <label for="nightWakeCount">새벽 각성 횟수</label>
+        <input type="number" id="nightWakeCount" min="0" max="20" value="0" />
+      </div>
+      <div>
+        <label for="napMinutes">낮잠(분)</label>
+        <input type="number" id="napMinutes" min="0" max="600" value="0" />
+      </div>
+    </div>
 
-<div class="card">
-<h3>오늘 기록</h3>
+    <div class="section-title">약 / 컨디션</div>
+    <div class="form-grid">
+      <div>
+        <label for="meds">복용약</label>
+        <input type="text" id="meds" placeholder="예: 리스페리돈, 슬리나이토 2mg" />
+      </div>
+      <div>
+        <label for="majorEvent">큰 영향 이벤트</label>
+        <input type="text" id="majorEvent" placeholder="예: 학교 적응, 병원 방문, 외출, 감기" />
+      </div>
+    </div>
 
-<label>날짜</label>
-<input type="date" id="date">
+    <div class="section-title">구간 / 관찰</div>
+    <div class="form-grid-3">
+      <div>
+        <label for="segment">기록 구간</label>
+        <select id="segment">
+          <option>새벽</option>
+          <option>아침</option>
+          <option>오전</option>
+          <option>점심</option>
+          <option>오후</option>
+          <option>저녁</option>
+          <option>취침 전</option>
+          <option>하루 전체</option>
+        </select>
+      </div>
+      <div>
+        <label for="food">식사 상태</label>
+        <select id="food">
+          <option>좋음</option>
+          <option>보통</option>
+          <option>적음</option>
+          <option>거부</option>
+        </select>
+      </div>
+      <div>
+        <label for="participation">참여도</label>
+        <select id="participation">
+          <option>좋음</option>
+          <option>보통</option>
+          <option>낮음</option>
+          <option>매우 어려움</option>
+        </select>
+      </div>
+    </div>
 
-<label>기록자</label>
-<select id="writer">
-<option value="엄마">엄마</option>
-<option value="아빠">아빠</option>
-</select>
+    <div class="section-title">점수 슬라이더</div>
+    <div class="form-grid">
+      <div>
+        <label for="anxiety">불안 / 예민함</label>
+        <div class="range-wrap">
+          <input type="range" id="anxiety" min="0" max="10" value="3" />
+          <div class="score" id="anxietyVal">3</div>
+        </div>
+      </div>
+      <div>
+        <label for="aggression">공격성 / 턱 표현</label>
+        <div class="range-wrap">
+          <input type="range" id="aggression" min="0" max="10" value="2" />
+          <div class="score" id="aggressionVal">2</div>
+        </div>
+      </div>
+      <div>
+        <label for="selfInjury">자해 / 자기손상</label>
+        <div class="range-wrap">
+          <input type="range" id="selfInjury" min="0" max="10" value="0" />
+          <div class="score" id="selfInjuryVal">0</div>
+        </div>
+      </div>
+      <div>
+        <label for="energy">에너지 / 흥분도</label>
+        <div class="range-wrap">
+          <input type="range" id="energy" min="0" max="10" value="5" />
+          <div class="score" id="energyVal">5</div>
+        </div>
+      </div>
+    </div>
 
-<label>수면시간(시간)</label>
-<input type="number" id="sleep">
+    <div class="section-title">자유 메모</div>
+    <div>
+      <label for="notes">오늘의 상세 관찰</label>
+      <textarea id="notes" placeholder="예: 새벽 2시경 각성 후 다시 잠들기 어려웠음. 차 안에서 안절부절, 학교에서는 예민함 증가."></textarea>
+    </div>
+  </section>
 
-<label>턱 행동 (0~10)</label>
-<input type="range" id="chin" min="0" max="10" value="0">
-<span id="chinVal">0</span>
+  <section class="card">
+    <h2>한눈 요약</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="k">기록 수</div>
+        <div class="v" id="statCount">0</div>
+        <div class="small">저장된 전체 일지</div>
+      </div>
+      <div class="stat">
+        <div class="k">평균 총수면</div>
+        <div class="v" id="statSleep">0h</div>
+        <div class="small">최근 전체 기록 기준</div>
+      </div>
+      <div class="stat">
+        <div class="k">평균 새벽 각성</div>
+        <div class="v" id="statWake">0</div>
+        <div class="small">밤중 깨는 횟수</div>
+      </div>
+      <div class="stat">
+        <div class="k">평균 공격성</div>
+        <div class="v" id="statAggression">0</div>
+        <div class="small">0~10 슬라이더 평균</div>
+      </div>
+    </div>
 
-<label>텐트럼 (0~10)</label>
-<input type="range" id="tantrum" min="0" max="10" value="0">
-<span id="tantrumVal">0</span>
+    <div class="section-title">최근 패턴 자동 요약</div>
+    <div class="summary-box" id="autoSummary">아직 기록이 없습니다. 첫 기록을 저장하면 자동 요약이 생성됩니다.</div>
 
-<label>불안 (0~10)</label>
-<input type="range" id="anxiety" min="0" max="10" value="0">
-<span id="anxietyVal">0</span>
-
-<label>순응도 (0~10)</label>
-<input type="range" id="compliance" min="0" max="10" value="0">
-<span id="complianceVal">0</span>
-
-<label>오늘 시엘에게 한 줄 편지</label>
-<textarea id="letter"></textarea>
-
-<button onclick="saveData()">저장</button>
-<button onclick="deleteData()" style="background:#dc2626;">오늘 기록 삭제</button>
+    <div class="footer-note">
+      저장은 기기 내부(localStorage)에 즉시 반영됩니다. 중요한 자료는 JSON 백업 버튼으로 함께 보관해 주세요.
+    </div>
+  </section>
 </div>
 
-<div class="card">
-<h3>그래프</h3>
-<canvas id="chart"></canvas>
-</div>
+<section class="card" style="margin-top:18px;">
+  <h2>최근 기록</h2>
+  <div id="recordList" class="list"></div>
+  <div id="emptyState" class="empty">저장된 기록이 아직 없습니다.</div>
+</section>
 
-<script>
-const STORAGE_KEY = "dear_siel_data";
-const today = new Date().toISOString().slice(0,10);
-document.getElementById("date").value = today;
+<section class="card danger-zone" style="margin-top:18px;">
+  <h2>데이터 관리</h2>
+  <p class="muted">앱이 꼬였을 때만 사용하세요. 삭제 전 반드시 JSON 백업을 권합니다.</p>
+  <button class="btn btn-danger" id="resetBtn">전체 기록 삭제</button>
+</section>
 
-["chin","tantrum","anxiety","compliance"].forEach(id=>{
-  const el = document.getElementById(id);
-  const val = document.getElementById(id+"Val");
-  el.oninput = ()=> val.innerText = el.value;
-});
+  </div>  <script>
+    const STORAGE_KEY = 'dear-siel-sleep-behavior-final-v1';
 
-function loadAll(){
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-}
+    const els = {
+      recordDate: document.getElementById('recordDate'),
+      writer: document.getElementById('writer'),
+      sleepStart: document.getElementById('sleepStart'),
+      sleepEnd: document.getElementById('sleepEnd'),
+      nightWakeCount: document.getElementById('nightWakeCount'),
+      napMinutes: document.getElementById('napMinutes'),
+      meds: document.getElementById('meds'),
+      majorEvent: document.getElementById('majorEvent'),
+      segment: document.getElementById('segment'),
+      food: document.getElementById('food'),
+      participation: document.getElementById('participation'),
+      anxiety: document.getElementById('anxiety'),
+      aggression: document.getElementById('aggression'),
+      selfInjury: document.getElementById('selfInjury'),
+      energy: document.getElementById('energy'),
+      anxietyVal: document.getElementById('anxietyVal'),
+      aggressionVal: document.getElementById('aggressionVal'),
+      selfInjuryVal: document.getElementById('selfInjuryVal'),
+      energyVal: document.getElementById('energyVal'),
+      notes: document.getElementById('notes'),
+      saveBtn: document.getElementById('saveBtn'),
+      todayFillBtn: document.getElementById('todayFillBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      csvBtn: document.getElementById('csvBtn'),
+      printBtn: document.getElementById('printBtn'),
+      importFile: document.getElementById('importFile'),
+      recordList: document.getElementById('recordList'),
+      emptyState: document.getElementById('emptyState'),
+      resetBtn: document.getElementById('resetBtn'),
+      statCount: document.getElementById('statCount'),
+      statSleep: document.getElementById('statSleep'),
+      statWake: document.getElementById('statWake'),
+      statAggression: document.getElementById('statAggression'),
+      autoSummary: document.getElementById('autoSummary')
+    };
 
-function saveAll(data){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+    let records = loadRecords();
 
-function saveData(){
-  let data = loadAll();
-  const date = document.getElementById("date").value;
-
-  const entry = {
-    date: date,
-    writer: document.getElementById("writer").value,
-    sleep: document.getElementById("sleep").value,
-    chin: document.getElementById("chin").value,
-    tantrum: document.getElementById("tantrum").value,
-    anxiety: document.getElementById("anxiety").value,
-    compliance: document.getElementById("compliance").value,
-    letter: document.getElementById("letter").value
-  };
-
-  const index = data.findIndex(d=>d.date===date);
-
-  if(index >= 0){
-    data[index] = entry; // 수정
-  }else{
-    data.push(entry); // 새 기록
-  }
-
-  saveAll(data);
-  drawChart();
-  alert("저장되었습니다");
-}
-
-function deleteData(){
-  let data = loadAll();
-  const date = document.getElementById("date").value;
-  data = data.filter(d=>d.date!==date);
-  saveAll(data);
-  drawChart();
-  alert("삭제되었습니다");
-}
-
-function drawChart(){
-  const data = loadAll();
-  const labels = data.map(d=>d.date);
-  const chin = data.map(d=>d.chin);
-
-  const ctx = document.getElementById("chart");
-
-  if(window.chart) window.chart.destroy();
-
-  window.chart = new Chart(ctx,{
-    type:'line',
-    data:{
-      labels:labels,
-      datasets:[{
-        label:'턱 행동',
-        data:chin,
-        borderColor:'blue'
-      }]
+    function todayStr() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().slice(0, 10);
     }
-  });
-}
 
-drawChart();
-</script>
+    function setTodayDefault() {
+      if (!els.recordDate.value) els.recordDate.value = todayStr();
+    }
 
-</body>
+    function syncRangeValue(inputEl, outputEl) {
+      outputEl.textContent = inputEl.value;
+      inputEl.addEventListener('input', () => outputEl.textContent = inputEl.value);
+    }
+
+    function loadRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        alert('저장 데이터를 읽는 중 오류가 있어 빈 상태로 시작합니다.');
+        return [];
+      }
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function timeToMinutes(value) {
+      if (!value || !value.includes(':')) return null;
+      const [h, m] = value.split(':').map(Number);
+      if (Number.isNaN(h) || Number.isNaN(m)) return null;
+      return h * 60 + m;
+    }
+
+    function calcSleepHours(start, end) {
+      const s = timeToMinutes(start);
+      const e = timeToMinutes(end);
+      if (s === null || e === null) return null;
+      let diff = e - s;
+      if (diff < 0) diff += 24 * 60;
+      return +(diff / 60).toFixed(1);
+    }
+
+    function getFormData() {
+      const sleepHours = calcSleepHours(els.sleepStart.value, els.sleepEnd.value);
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        date: els.recordDate.value,
+        writer: els.writer.value,
+        sleepStart: els.sleepStart.value,
+        sleepEnd: els.sleepEnd.value,
+        sleepHours,
+        nightWakeCount: Number(els.nightWakeCount.value || 0),
+        napMinutes: Number(els.napMinutes.value || 0),
+        meds: els.meds.value.trim(),
+        majorEvent: els.majorEvent.value.trim(),
+        segment: els.segment.value,
+        food: els.food.value,
+        participation: els.participation.value,
+        anxiety: Number(els.anxiety.value),
+        aggression: Number(els.aggression.value),
+        selfInjury: Number(els.selfInjury.value),
+        energy: Number(els.energy.value),
+        notes: els.notes.value.trim(),
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function validateRecord(record) {
+      if (!record.date) {
+        alert('날짜를 입력해 주세요.');
+        return false;
+      }
+      return true;
+    }
+
+    function resetFormKeepDate() {
+      const keepDate = els.recordDate.value || todayStr();
+      els.writer.value = '엄마';
+      els.sleepStart.value = '';
+      els.sleepEnd.value = '';
+      els.nightWakeCount.value = 0;
+      els.napMinutes.value = 0;
+      els.meds.value = '';
+      els.majorEvent.value = '';
+      els.segment.value = '새벽';
+      els.food.value = '좋음';
+      els.participation.value = '좋음';
+      els.anxiety.value = 3;
+      els.aggression.value = 2;
+      els.selfInjury.value = 0;
+      els.energy.value = 5;
+      els.notes.value = '';
+      els.recordDate.value = keepDate;
+      els.anxietyVal.textContent = '3';
+      els.aggressionVal.textContent = '2';
+      els.selfInjuryVal.textContent = '0';
+      els.energyVal.textContent = '5';
+    }
+
+    function average(arr) {
+      if (!arr.length) return 0;
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    function generateSummary(data) {
+      if (!data.length) return '아직 기록이 없습니다. 첫 기록을 저장하면 자동 요약이 생성됩니다.';
+
+      const sleepValues = data.map(r => r.sleepHours).filter(v => typeof v === 'number');
+      const avgSleep = average(sleepValues);
+      const avgWake = average(data.map(r => r.nightWakeCount || 0));
+      const avgAgg = average(data.map(r => r.aggression || 0));
+      const avgAnx = average(data.map(r => r.anxiety || 0));
+      const avgSelf = average(data.map(r => r.selfInjury || 0));
+
+      const events = {};
+      data.forEach(r => {
+        if (r.majorEvent) events[r.majorEvent] = (events[r.majorEvent] || 0) + 1;
+      });
+      const topEvent = Object.entries(events).sort((a,b) => b[1]-a[1])[0];
+
+      const recent = [...data].sort((a,b) => (a.date < b.date ? 1 : -1)).slice(0, 3);
+      const harderDays = data.filter(r => (r.aggression || 0) >= 7 || (r.selfInjury || 0) >= 5 || (r.nightWakeCount || 0) >= 2).length;
+
+      const lines = [];
+      lines.push(`최근 저장 기록 ${data.length}건 기준입니다.`);
+      lines.push(`평균 총수면은 ${sleepValues.length ? avgSleep.toFixed(1) : '0.0'}시간, 평균 새벽 각성은 ${avgWake.toFixed(1)}회입니다.`);
+      lines.push(`행동 점수 평균은 불안 ${avgAnx.toFixed(1)}, 공격성 ${avgAgg.toFixed(1)}, 자해 ${avgSelf.toFixed(1)}입니다.`);
+      if (topEvent) lines.push(`반복된 큰 영향 이벤트는 "${topEvent[0]}" (${topEvent[1]}회)입니다.`);
+      lines.push(`주의 깊게 본 날은 ${harderDays}일이며, 수면 흔들림이나 공격성 상승이 함께 기록된 날을 진료 시 함께 보여주시면 좋습니다.`);
+      if (recent.length) {
+        lines.push('최근 메모 요약:');
+        recent.forEach(r => {
+          const note = r.notes ? r.notes.slice(0, 50) : '메모 없음';
+          lines.push(`- ${r.date}: ${note}${r.notes && r.notes.length > 50 ? '…' : ''}`);
+        });
+      }
+      return lines.join('\n');
+    }
+
+    function updateStats() {
+      els.statCount.textContent = String(records.length);
+      const sleepValues = records.map(r => r.sleepHours).filter(v => typeof v === 'number');
+      els.statSleep.textContent = `${average(sleepValues).toFixed(1)}h`;
+      els.statWake.textContent = average(records.map(r => r.nightWakeCount || 0)).toFixed(1);
+      els.statAggression.textContent = average(records.map(r => r.aggression || 0)).toFixed(1);
+      els.autoSummary.textContent = generateSummary(records);
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderList() {
+      const sorted = [...records].sort((a,b) => (a.date < b.date ? 1 : -1) || (a.createdAt < b.createdAt ? 1 : -1));
+      els.recordList.innerHTML = '';
+      els.emptyState.style.display = sorted.length ? 'none' : 'block';
+
+      sorted.forEach(record => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <div class="item-head">
+            <div>
+              <div class="item-date">${escapeHtml(record.date)}</div>
+              <div class="muted">기록자 ${escapeHtml(record.writer)} · 구간 ${escapeHtml(record.segment)}</div>
+            </div>
+            <div>
+              <button class="btn btn-danger" data-id="${record.id}">삭제</button>
+            </div>
+          </div>
+          <div class="chips">
+            <span class="chip">총수면 ${record.sleepHours ?? '-'}시간</span>
+            <span class="chip">새벽각성 ${record.nightWakeCount}회</span>
+            <span class="chip">낮잠 ${record.napMinutes}분</span>
+            <span class="chip">불안 ${record.anxiety}</span>
+            <span class="chip">공격성 ${record.aggression}</span>
+            <span class="chip">자해 ${record.selfInjury}</span>
+            <span class="chip">에너지 ${record.energy}</span>
+            <span class="chip">식사 ${escapeHtml(record.food)}</span>
+            <span class="chip">참여도 ${escapeHtml(record.participation)}</span>
+          </div>
+          ${record.meds ? `<div><strong>복용약:</strong> ${escapeHtml(record.meds)}</div>` : ''}
+          ${record.majorEvent ? `<div style="margin-top:6px;"><strong>영향 이벤트:</strong> ${escapeHtml(record.majorEvent)}</div>` : ''}
+          ${record.notes ? `<div style="margin-top:8px; white-space:pre-wrap; line-height:1.6;"><strong>메모:</strong> ${escapeHtml(record.notes)}</div>` : ''}
+        `;
+        els.recordList.appendChild(div);
+      });
+
+      document.querySelectorAll('[data-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = e.currentTarget.getAttribute('data-id');
+          const found = records.find(r => r.id === id);
+          if (!found) return;
+          if (!confirm(`${found.date} 기록을 삭제할까요?`)) return;
+          records = records.filter(r => r.id !== id);
+          saveRecords();
+          renderAll();
+        });
+      });
+    }
+
+    function renderAll() {
+      updateStats();
+      renderList();
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportJson() {
+      const payload = {
+        app: 'dear-siel-sleep-behavior-final',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        records
+      };
+      downloadFile(`dear-siel-backup-${todayStr()}.json`, JSON.stringify(payload, null, 2), 'application/json');
+    }
+
+    function exportCsv() {
+      const headers = ['date','writer','sleepStart','sleepEnd','sleepHours','nightWakeCount','napMinutes','meds','majorEvent','segment','food','participation','anxiety','aggression','selfInjury','energy','notes'];
+      const rows = records.map(r => headers.map(h => {
+        const value = r[h] ?? '';
+        return `"${String(value).replace(/"/g, '""')}"`;
+      }).join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      downloadFile(`dear-siel-records-${todayStr()}.csv`, csv, 'text/csv;charset=utf-8;');
+    }
+
+    function handleImport(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const imported = Array.isArray(parsed) ? parsed : parsed.records;
+          if (!Array.isArray(imported)) throw new Error('형식 오류');
+          records = imported;
+          saveRecords();
+          renderAll();
+          alert('백업 데이터를 불러왔습니다.');
+        } catch (e) {
+          alert('백업 파일 형식이 올바르지 않습니다.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    els.saveBtn.addEventListener('click', () => {
+      const record = getFormData();
+      if (!validateRecord(record)) return;
+      records.push(record);
+      saveRecords();
+      renderAll();
+      resetFormKeepDate();
+      alert('기록이 저장되었습니다.');
+    });
+
+    els.todayFillBtn.addEventListener('click', () => {
+      els.recordDate.value = todayStr();
+    });
+
+    els.exportBtn.addEventListener('click', exportJson);
+    els.csvBtn.addEventListener('click', exportCsv);
+    els.printBtn.addEventListener('click', () => window.print());
+
+    els.importFile.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) handleImport(file);
+      e.target.value = '';
+    });
+
+    els.resetBtn.addEventListener('click', () => {
+      const ok = confirm('전체 기록을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.');
+      if (!ok) return;
+      records = [];
+      saveRecords();
+      renderAll();
+      alert('전체 기록이 삭제되었습니다.');
+    });
+
+    syncRangeValue(els.anxiety, els.anxietyVal);
+    syncRangeValue(els.aggression, els.aggressionVal);
+    syncRangeValue(els.selfInjury, els.selfInjuryVal);
+    syncRangeValue(els.energy, els.energyVal);
+
+    setTodayDefault();
+    renderAll();
+  </script></body>
 </html>
